@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Node
+  - Piece
+  - ActiveHand
+  - Card
+  - Monster
+  - King
+  - Popup
+  - Effect
+  - GameOver
+  - Setting
+  - BattleUI
+  - StatusUI
+  - PlaceUI
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Constact
+  - PathLine
+  - 'Node '
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: PathLine
+    uniqueID: 1012013907
+    locked: 0
+  - name: Node
+    uniqueID: 1174914701
+    locked: 0

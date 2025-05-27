@@ -1,0 +1,223 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3b84600d9641b844a5760cbd0af4710, type: 3}
+  m_Name: CardTable
+  m_EditorClassIdentifier: 
+  dataTable:
+  - index: 0
+    rarity: 0
+    category: 0
+    piece: 0
+    cost: 1
+    name: "\uB9F9\uC138\uC758\uCC38\uACA9"
+    image: Image/Card/CARD_0
+    effect: "\uACF5\uACA9\uB825+100"
+  - index: 1
+    rarity: 0
+    category: 0
+    piece: 1
+    cost: 1
+    name: "\uBD84\uB178\uC758\uBD88\uAF43"
+    image: Image/Card/CARD_1
+    effect: "\uACF5\uACA9\uD69F\uC218x2"
+  - index: 2
+    rarity: 0
+    category: 0
+    piece: 2
+    cost: 1
+    name: "\uC2E0\uB150\uC758\uC77C\uACA9"
+    image: Image/Card/CARD_2
+    effect: "\uACF5\uACA9\uB825x2"
+  - index: 3
+    rarity: 0
+    category: 0
+    piece: 3
+    cost: 1
+    name: "\uACA9\uB82C\uD55C\uC5F0\uB300"
+    image: Image/Card/CARD_3
+    effect: "\uACF5\uACA9\uB825+100"
+  - index: 4
+    rarity: 0
+    category: 0
+    piece: 4
+    cost: 1
+    name: "\uB728\uAC70\uC6B4\uAC08\uB9DD"
+    image: Image/Card/CARD_4
+    effect: "\uACF5\uACA9\uB825x2"
+  - index: 5
+    rarity: 0
+    category: 0
+    piece: 0,3
+    cost: 2
+    name: "\uBD88\uC0AC\uC758\uB3CC\uC9C4"
+    image: Image/Card/CARD_5
+    effect: "\uACF5\uACA9\uB825+250"
+  - index: 6
+    rarity: 0
+    category: 0
+    piece: 1
+    cost: 2
+    name: "\uBD88\uAD74\uC758\uC7BF\uBD88"
+    image: Image/Card/CARD_6
+    effect: "\uACF5\uACA9\uD69F\uC218x3"
+  - index: 7
+    rarity: 0
+    category: 0
+    piece: 2,4
+    cost: 3
+    name: "\uB9F9\uB82C\uD55C\uC560\uC815"
+    image: Image/Card/CARD_7
+    effect: "\uACF5\uACA9\uB825x3"
+  - index: 8
+    rarity: 0
+    category: 1
+    piece: 0,1,3
+    cost: 1
+    name: "\uB048\uC9C8\uAE34\uC800\uD56D"
+    image: Image/Card/CARD_8
+    effect: "\uC774\uBC88\uD134\uB3D9\uC548\uB370\uBBF8\uC9C0\uD53C\uD574\uBA74\uC5ED"
+  - index: 9
+    rarity: 0
+    category: 1
+    piece: 2,4
+    cost: 1
+    name: "\uD68C\uAC1C\uC758\uC7A5\uB9C9"
+    image: Image/Card/CARD_9
+    effect: "\uC774\uBC88\uD134\uB3D9\uC548\uB370\uBBF8\uC9C0\uD53C\uD574\uBA74\uC5ED"
+  - index: 10
+    rarity: 0
+    category: 2
+    piece: 
+    cost: 0
+    name: "\uB0B4\uBA74\uC758\uC870\uC728"
+    image: Image/Card/CARD_10
+    effect: "\uCF54\uC2A4\uD2B81\uD68C\uBCF5"
+  - index: 11
+    rarity: 0
+    category: 2
+    piece: 
+    cost: 0
+    name: "\uB0A8\uACA8\uC9C4\uC720\uC5B8"
+    image: Image/Card/CARD_11
+    effect: "\uCE74\uB4DC1\uC7A5\uB4DC\uB85C\uC6B0"
+  - index: 12
+    rarity: 0
+    category: 2
+    piece: 
+    cost: 1
+    name: "\uC804\uC220\uC801\uD6C4\uD1F4"
+    image: Image/Card/CARD_12
+    effect: "\uCE74\uB4DC3\uC7A5\uC744\uBC84\uB9AC\uACE0,\uCE74\uB4DC3\uC7A5\uB4DC\uB85C\uC6B0"
+  - index: 13
+    rarity: 0
+    category: 2
+    piece: 
+    cost: 2
+    name: "\uC18C\uAC01\uC758\uC11C\uC57D"
+    image: Image/Card/CARD_13
+    effect: "\uC190\uD328\uC758\uACF5\uACA9\uCE74\uB4DC\uC758\uCF54\uC2A4\uD2B8-1"
+  - index: 14
+    rarity: 1
+    category: 0
+    piece: 0,1,3
+    cost: 2
+    name: "\uC6B4\uBA85\uC758\uD3ED\uBC1C"
+    image: Image/Card/CARD_14
+    effect: "\uACF5\uACA9\uB825x3"
+  - index: 15
+    rarity: 1
+    category: 0
+    piece: 2,4
+    cost: 2
+    name: "\uC804\uC7A5\uC758\uB9F9\uC138"
+    image: Image/Card/CARD_15
+    effect: "\uACF5\uACA9\uB825+300"
+  - index: 16
+    rarity: 1
+    category: 0
+    piece: 0,1,2,3,4
+    cost: 3
+    name: "\uC601\uAD11\uC758\uBD88\uAE38"
+    image: Image/Card/CARD_16
+    effect: "\uACF5\uACA9\uD69F\uC218x2"
+  - index: 17
+    rarity: 1
+    category: 1
+    piece: 0,1,3
+    cost: 1
+    name: "\uC2EC\uC5F0\uC758\uBC29\uD328"
+    image: Image/Card/CARD_17
+    effect: "\uC774\uBC88\uD134\uB3D9\uC548\uC0C1\uD0DC\uC774\uC0C1\uD53C\uD574\uBA74\uC5ED"
+  - index: 18
+    rarity: 1
+    category: 1
+    piece: 2,4
+    cost: 1
+    name: "\uC2E0\uC131\uD55C\uCC28\uD3D0"
+    image: Image/Card/CARD_18
+    effect: "\uC774\uBC88\uD134\uB3D9\uC548\uC0C1\uD0DC\uC774\uC0C1\uD53C\uD574\uBA74\uC5ED"
+  - index: 19
+    rarity: 1
+    category: 2
+    piece: 
+    cost: 0
+    name: "\uC2E0\uC18D\uD55C\uC9C0\uC6D0"
+    image: Image/Card/CARD_19
+    effect: "\uCF54\uC2A4\uD2B81\uD68C\uBCF5, \uCE74\uB4DC1\uC7A5\uB4DC\uB85C\uC6B0"
+  - index: 20
+    rarity: 1
+    category: 2
+    piece: 
+    cost: 1
+    name: "\uAE30\uC5B5\uC758\uC794\uAD11"
+    image: Image/Card/CARD_20
+    effect: "\uCE74\uB4DC1\uC7A5\uC744\uBC84\uB9AC\uACE0\uCE74\uB4DC3\uC7A5\uB4DC\uB85C\uC6B0"
+  - index: 21
+    rarity: 1
+    category: 2
+    piece: 
+    cost: 2
+    name: "\uCE68\uBB35\uC758\uACC4\uC2DC"
+    image: Image/Card/CARD_21
+    effect: "\uC190\uD328\uC758\uACF5\uACA9,\uBC29\uC5B4\uCE74\uB4DC\uCF54\uC2A4\uD2B8-1"
+  - index: 22
+    rarity: 1
+    category: 2
+    piece: 
+    cost: 3
+    name: "\uC2DC\uAC04\uC758\uC7AC\uB2E8"
+    image: Image/Card/CARD_22
+    effect: "\uCF54\uC2A4\uD2B8\uCD1D\uB7C98\uB85C\uC99D\uAC00(\uC911\uCCA9\uBD88\uAC00)"
+  - index: 23
+    rarity: 2
+    category: 0
+    piece: 0,1,2,3,4
+    cost: 2
+    name: "\uC885\uB9D0\uC758\uC120\uACE0"
+    image: Image/Card/CARD_23
+    effect: "\uACF5\uACA9\uB825x\uBC30\uCE58\uB41C\uAE30\uBB3C\uC758\uC218"
+  - index: 24
+    rarity: 2
+    category: 1
+    piece: 0,1,2,3,4
+    cost: 2
+    name: "\uC5EC\uC2E0\uC758\uAC00\uD638"
+    image: Image/Card/CARD_24
+    effect: "\uBAA8\uB4E0\uB370\uBBF8\uC9C0\uC640\uC0C1\uD0DC\uC774\uC0C1\uD53C\uD574\uBA74\uC5ED"
+  - index: 25
+    rarity: 2
+    category: 2
+    piece: 
+    cost: 3
+    name: "\uC6B4\uBA85\uC758\uAC1C\uC785"
+    image: Image/Card/CARD_25
+    effect: "\uCF54\uC2A4\uD2B8\uCD1D\uB7C910\uC73C\uB85C\uC99D\uAC00(\uC911\uCCA9\uBD88\uAC00)"

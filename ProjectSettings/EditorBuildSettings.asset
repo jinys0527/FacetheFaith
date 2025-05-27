@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/0_Scenes/SceneName/TITLE.unity
+    guid: 5bcea585361992748acd933084d0223b
+  - enabled: 1
+    path: Assets/0_Scenes/SceneName/Synopsis.unity
+    guid: 9f388cb8e453d6444beb2362bd4a613e
+  - enabled: 1
+    path: Assets/0_Scenes/SceneName/MAP.unity
+    guid: 34a7c22400333a244ad3983827772ec8
+  - enabled: 1
+    path: Assets/0_Scenes/SceneName/Stage_Battle.unity
+    guid: 46413d2d478ee184797684e613ff89eb
+  - enabled: 1
+    path: Assets/0_Scenes/SceneName/STAGE_REST.unity
+    guid: de7653887d4f66043905dfb5d6839185
+  - enabled: 1
+    path: Assets/0_Scenes/SceneName/STAGE_TREASURE.unity
+    guid: 34ca54b793441a04f8d19f66cd98e9ed
+  m_configObjects: {}
