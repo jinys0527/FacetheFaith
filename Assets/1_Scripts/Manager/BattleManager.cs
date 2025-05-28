@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
 using static Piece;
+using System;
 
 
 public enum eBattleState
@@ -21,7 +22,7 @@ public enum eBattleState
 
 public class BattleManager : MonoBehaviour
 {
-    public static BattleManager BattleManagerInstance;
+    public static BattleManager instance;
 
     [SerializeField] bool CanLayOut = false;
     [SerializeField] bool isPlayerTurn = false;
@@ -31,6 +32,7 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] GameObject RewardPanel;
 
+    [SerializeField] Button TurnEndButton;
 
     public float totalDamage = 0f;
     public float currentDamage = 0f;
@@ -53,9 +55,9 @@ public class BattleManager : MonoBehaviour
         gameclear_gameobj.SetActive(false);
         RewardPanel.SetActive(false);
 
-        if (BattleManagerInstance == null)
+        if (instance == null)
         {
-            BattleManagerInstance = this;
+            instance = this;
         }
         else
         {
@@ -82,7 +84,7 @@ public class BattleManager : MonoBehaviour
             case 2:
             case 3:
             case 4:
-                type = Random.Range(0, 2);
+                type = UnityEngine.Random.Range(0, 2);
                 if (type == 0)
                 {
                     monsterScript.SetType(eMonsterType.Betrayal, stageNum);
@@ -98,7 +100,7 @@ public class BattleManager : MonoBehaviour
             case 6:
             case 8:
             case 9:
-                type = Random.Range(0, 2);
+                type = UnityEngine.Random.Range(0, 2);
                 if (type == 0)
                 {
                     monsterScript.SetType(eMonsterType.Plague, stageNum);
@@ -117,13 +119,6 @@ public class BattleManager : MonoBehaviour
         SoundManager.Instance.PlaySFX(e_SFXname.s_Enemy_Appears);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            SetState(++currentState);
-        }
-    }
     public bool GetCanLayOut()
     {
         return CanLayOut;
@@ -147,18 +142,23 @@ public class BattleManager : MonoBehaviour
 
     public void NextState()
     {
-        if(!BaseUIManager.Instance.isPopupOpen)
+        if(!GameManager.instance.CurrentUIManager.isPopupOpen && !isChangingState)
         {
             SoundManager.Instance.PlaySFX(e_SFXname.s_Turn);
-            if (isChangingState) return;
-
+            isChangingState = true;
+            TurnEndButton.interactable = false;
 
             if (currentState == eBattleState.LayOut)
             {
-                if (BattlePieceManager.instance.pieces.Count < 1) return;
-                BaseUIManager.Instance.HidePlaceUI();
+                if (BattlePieceManager.instance.pieces.Count < 1)
+                {
+                    isChangingState = false;
+                    TurnEndButton.interactable = true;
+                    return;
+                }
+                GameManager.instance.CurrentUIManager.HidePlaceUI();
                 BattlePieceManager.instance.DisablePieces();
-                BaseUIManager.Instance.OpenBattleUIs();
+                GameManager.instance.CurrentUIManager.OpenBattleUIs();
             }
 
             StartCoroutine(NextStateCoroutine());
@@ -167,10 +167,14 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator NextStateCoroutine()
     {
-        isChangingState = true;
-        SetState(++currentState);
         yield return null;
+
+        currentState = (eBattleState)(((int)currentState + 1) % Enum.GetNames(typeof(eBattleState)).Length);
+        SetState(currentState);
+
+        yield return new WaitForSeconds(0.1f);
         isChangingState = false;
+        TurnEndButton.interactable = true;
     }
 
     void StateUpdate()
@@ -183,8 +187,8 @@ public class BattleManager : MonoBehaviour
                 PlayerManager.instance.maxCost = PlayerManager.MAXCOST;
                 break;
             case eBattleState.ShowPattern:
-                BattleCardManager.BattleCardManagerInstance.cardCategory.Clear();
-                BattleCardManager.BattleCardManagerInstance.costReduction = 0;
+                BattleCardManager.instance.cardCategory.Clear();
+                BattleCardManager.instance.costReduction = 0;
                 PlayerManager.instance.cost = PlayerManager.instance.maxCost + PlayerManager.instance.carryOverCost;
                 if (PlayerManager.instance.carryOverCost != 0)
                 {
@@ -197,12 +201,13 @@ public class BattleManager : MonoBehaviour
                     piece.ClearDamageModifiers();
                     piece.currentDamage = piece.GetAtk();
                 }
-                BossPatternManager.instance.Play(BossPatternManager.instance.GetIndex());
+                GameManager.instance.CurrentUIManager.UpdateBattleUIs();
+                BossPatternManager.instance.Play();
                 CanLayOut = false;
                 SetState(eBattleState.Draw);
                 break;
             case eBattleState.Draw:
-                BattleCardManager.BattleCardManagerInstance.StartCo_Draw(BattleCardManager.DRAWCOUNT);
+                BattleCardManager.instance.StartCo_Draw(BattleCardManager.DRAWCOUNT);
                 SetState(eBattleState.PlayerTurn);
                 break;
             case eBattleState.PlayerTurn: //이때 플레이어 턴 UI  활성화
@@ -246,7 +251,7 @@ public class BattleManager : MonoBehaviour
                 if (MapManager.instance == null) stageNum = 1; // 디버깅용
                 else stageNum = MapManager.instance.GetStageNum();
 
-                BattleCardManager.BattleCardManagerInstance.FinishBattle();
+                BattleCardManager.instance.FinishBattle();
 
                 if (stageNum == 10)    //보스 스테이지인 경우
                 {
@@ -255,24 +260,17 @@ public class BattleManager : MonoBehaviour
                     StopAllCoroutines();
                 }
                 else
-                { //여기수정해야함
-
+                { 
                     RewardPanel.SetActive(true);
                     StopAllCoroutines();
                 }
-
-                //맵으로
                 break;
             case eBattleState.GameOver:
                 Debug.Log("GameOver");
                 SoundManager.Instance.PlaySFX(e_SFXname.s_Death);
 
-                // Canvas findcanvas = gameobj.GetComponent<Canvas>();
-
                 gameover_gameobj.SetActive(true);
 
-                //SceneChageManager.Instance.ChangeGameState(GameState.Title);
-                //게임 오버 처리
                 break;
         }
     }
@@ -285,8 +283,6 @@ public class BattleManager : MonoBehaviour
         // 2. 몬스터 행동
         BattlePieceManager.instance.DisableStatusPieces();
         monsterScript.Attack(BossPatternManager.instance.nodeList);
-
-        // 여기에 패턴 보여주는거 추가하면댐
 
         // 3. 다음 상태 전환
         SetState(eBattleState.PlayerAttack);
@@ -308,14 +304,22 @@ public class BattleManager : MonoBehaviour
             for (int i = 0; i < piece.attackCount; i++)
             {
                 float modifiedAtk = baseAtk;
-
-                foreach (var mod in piece.GetDamageModifiers())
+                if(piece.isDistort)
                 {
-                    modifiedAtk = modifiedAtk * mod.product + mod.sum;
+                    currentDamage = modifiedAtk;
+                    monsterScript.SetHp(monsterScript.GetHp() - currentDamage);
                 }
-                currentDamage = modifiedAtk;
-                monsterScript.SetHp(monsterScript.GetHp() - currentDamage);
-                BaseUIManager.Instance.DamageMonster();
+                else
+                {
+                    foreach (var mod in piece.GetDamageModifiers())
+                    {
+                        modifiedAtk = modifiedAtk * mod.product + mod.sum;
+                    }
+                    currentDamage = modifiedAtk;
+                    monsterScript.SetHp(monsterScript.GetHp() - currentDamage);
+                }
+                
+                GameManager.instance.CurrentUIManager.DamageMonster();
                 totalDamage += currentDamage;
                 Animator animator = piece.gameObject.GetComponent<Animator>();
                 if (animator != null)
@@ -349,11 +353,11 @@ public class BattleManager : MonoBehaviour
                 {
                     case PieceVariant.Pawn:
                         effect = Instantiate(piece.attackEffect[(int)piece.pieceVariant]);
-                        effect.transform.position = effect.transform.position + Vector3.up * 0.5f;
+                        effect.transform.position = piece.transform.position + Vector3.up * 0.5f;
                         break;
                     case PieceVariant.Knight:
                         effect = Instantiate(piece.attackEffect[(int)piece.pieceVariant]);
-                        effect.transform.position = effect.transform.position + Vector3.up * 0.5f;
+                        effect.transform.position = piece.transform.position + Vector3.up * 0.5f;
                         break;
                     default:
                         effect = Instantiate(piece.attackEffect[(int)piece.pieceVariant], go.transform);
@@ -383,7 +387,7 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            BattleCardManager.BattleCardManagerInstance.Discard();
+            BattleCardManager.instance.Discard();
             SetState(eBattleState.ShowPattern);
         }
     }

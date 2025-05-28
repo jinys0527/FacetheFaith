@@ -542,6 +542,13 @@ MonoBehaviour:
   gotoTitleButton:
   - {fileID: 1975019387}
   - {fileID: 372193343}
+  hpRectTransform: {fileID: 0}
+  hpDrainRectTransform: {fileID: 0}
+  monster: {fileID: 0}
+  statusInfoUI: {fileID: 0}
+  damageInfoUI: {fileID: 0}
+  placeUI: {fileID: 0}
+  battleUI: {fileID: 0}
   deckHoverLayer: {fileID: 0}
   graveHoverLayer: {fileID: 0}
 --- !u!1 &92032194
@@ -1001,9 +1008,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardTable: {fileID: 11400000, guid: 16156e48462041a40ac0a7c8973b59d9, type: 2}
   initDeckIndices: 000000000000000001000000010000000300000003000000080000000a0000000b0000000c000000
-  m_deckCount: 0
-  m_handCount: 0
-  m_graveCount: 0
   radius: 4000
   maxAngle: 15
   minAngle: 0.5
@@ -2263,8 +2267,8 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 112.5, y: 225}
-  m_Spacing: {x: 0, y: 0}
+  m_CellSize: {x: 180, y: 225}
+  m_Spacing: {x: -67.5, y: 0}
   m_Constraint: 1
   m_ConstraintCount: 3
 --- !u!1 &426130704
@@ -2326,9 +2330,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: injaewon saikyo
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2792add384632294b8bb8ab6af65b165, type: 2}
-  m_sharedMaterial: {fileID: -2146842423703289107, guid: 2792add384632294b8bb8ab6af65b165,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2941,6 +2944,7 @@ MonoBehaviour:
   monster: {fileID: 0}
   currentState: 0
   RewardPanel: {fileID: 0}
+  TurnEndButton: {fileID: 1220248257}
   totalDamage: 0
   currentDamage: 0
   gameover_gameobj: {fileID: 0}
@@ -3561,7 +3565,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   piece: {fileID: 0}
   isPlace: 0
-  CanMove: 0
+  canMove: 0
   preventEffect: 0
   blockPiece: 0
 --- !u!4 &743081011
@@ -3932,9 +3936,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2792add384632294b8bb8ab6af65b165, type: 2}
-  m_sharedMaterial: {fileID: -2146842423703289107, guid: 2792add384632294b8bb8ab6af65b165,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4163,7 +4166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 5223280409471922984, guid: 5ac64d9ba0143234f9f52bcf39f114e9, type: 3}
   pieces: []
-  grid: {fileID: 0}
+  grid: {fileID: 895957846}
   columns: 2
   count: 0
 --- !u!114 &895957844
@@ -4224,8 +4227,8 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 125, y: 250}
-  m_Spacing: {x: -35, y: -30}
+  m_CellSize: {x: 175, y: 250}
+  m_Spacing: {x: -85, y: -30}
   m_Constraint: 1
   m_ConstraintCount: 2
 --- !u!1 &899074230
@@ -4879,7 +4882,7 @@ GameObject:
   - component: {fileID: 1034086179}
   - component: {fileID: 1034086178}
   m_Layer: 5
-  m_Name: DamageUI Button
+  m_Name: DamageUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5852,14 +5855,14 @@ RectTransform:
   m_GameObject: {fileID: 1220248254}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.02, y: 1.04, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 251132858}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 558, y: -347}
+  m_AnchoredPosition: {x: 550.5, y: -347.6}
   m_SizeDelta: {x: 296, y: 98}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1220248257
@@ -6204,9 +6207,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2792add384632294b8bb8ab6af65b165, type: 2}
-  m_sharedMaterial: {fileID: -2146842423703289107, guid: 2792add384632294b8bb8ab6af65b165,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8042,9 +8044,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 5
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2792add384632294b8bb8ab6af65b165, type: 2}
-  m_sharedMaterial: {fileID: -2146842423703289107, guid: 2792add384632294b8bb8ab6af65b165,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8590,17 +8591,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c87674500e45ef429e85ab87f79c0be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pawnCount: 1
-  knightCount: 1
-  bishopCount: 1
-  rookCount: 1
-  queenCount: 1
-  upgradedPawnCount: 0
-  upgradedKnightCount: 0
-  upgradedBishopCount: 0
-  upgradedRookCount: 0
-  upgradedQueenCount: 0
   pieces: []
+  inventoryPieces: []
 --- !u!4 &1744324831
 Transform:
   m_ObjectHideFlags: 0
@@ -8913,16 +8905,6 @@ MonoBehaviour:
   cost: 5
   maxCost: 5
   carryOverCost: 0
-  pawnCount: 1
-  knightCount: 1
-  bishopCount: 1
-  rookCount: 1
-  queenCount: 1
-  upgradedPawnCount: 1
-  upgradedKnightCount: 1
-  upgradedBishopCount: 1
-  upgradedRookCount: 1
-  upgradedQueenCount: 1
 --- !u!4 &1768566102
 Transform:
   m_ObjectHideFlags: 0
@@ -9081,7 +9063,7 @@ GameObject:
   - component: {fileID: 1817973265}
   - component: {fileID: 1817973264}
   m_Layer: 5
-  m_Name: StatusUI Button
+  m_Name: StatusUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9398,9 +9380,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2792add384632294b8bb8ab6af65b165, type: 2}
-  m_sharedMaterial: {fileID: -2146842423703289107, guid: 2792add384632294b8bb8ab6af65b165,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

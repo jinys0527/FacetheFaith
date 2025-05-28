@@ -235,7 +235,7 @@ public class Monster : MonoBehaviour
                     piece.SetHp(0f);
                     piece.SetDead();
                 }
-                BaseUIManager.Instance.UpdateBattleUIs();
+                GameManager.instance.CurrentUIManager.UpdateBattleUIs();
             }
         }
     }

@@ -16,7 +16,7 @@ public class GameOver : MonoBehaviour
     public void FadeInGameOver()
     {
         StartCoroutine(FadeInCoroutine());
-        BaseUIManager.Instance.isPopupOpen = true;
+        GameManager.instance.CurrentUIManager.isPopupOpen = true;
     }
 
     IEnumerator FadeInCoroutine()

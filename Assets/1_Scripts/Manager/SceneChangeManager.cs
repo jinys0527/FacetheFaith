@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using Unity.VisualScripting;
 
-public class SceneChageManager : MonoBehaviour
+public class SceneChangeManager : MonoBehaviour
 {
-    public static SceneChageManager Instance { get; private set; }
+    public static SceneChangeManager Instance { get; private set; }
 
     [Header("마스크 이미지")]
     [SerializeField] RectTransform leftMask;
@@ -49,7 +49,9 @@ public class SceneChageManager : MonoBehaviour
 
         isTransitioning = true;
 
+        SceneManager.sceneLoaded -= OnSceneLoaded; // 중복 등록 방지
         SceneManager.sceneLoaded += OnSceneLoaded;
+
         StartCoroutine(DoTransition(() => GameManager.instance.SetGameState(nextState)));
     }
 
@@ -60,14 +62,15 @@ public class SceneChageManager : MonoBehaviour
 
         isTransitioning = true;
 
+        SceneManager.sceneLoaded -= OnSceneLoaded; // 중복 등록 방지
         SceneManager.sceneLoaded += OnSceneLoaded;
+
         StartCoroutine(DoTransition(() => SceneManager.LoadScene(sceneName)));
     }
 
     /* 공통 애니메이션 수행 후 콜백 실행 */
     IEnumerator DoTransition(System.Action onComplete)
     {
-        Debug.Log("DoTransition");
         Vector2 lStart = leftMask.anchoredPosition;
         Vector2 rStart = rightMask.anchoredPosition;
 
@@ -97,6 +100,7 @@ public class SceneChageManager : MonoBehaviour
         // 새 씬에서 슬라이드-아웃 코루틴 실행
         StartCoroutine(SlideOut());
     }
+
     IEnumerator SlideOut()
     {
         Vector2 centerLeft = leftMask.anchoredPosition;   // 현재 중앙
@@ -117,26 +121,4 @@ public class SceneChageManager : MonoBehaviour
         touchMask.SetActive(false);
 
     }
-
-    //void OnSceneLoaded(Scene scene, LoadSceneMode mode) 
-    //{
-    //    Debug.Log($"씬 로드 완료: {scene.name}, 로드 방식: {mode}");
-    //    float t = 0f;
-    //    while (t < animDuration)
-    //    {
-    //        t += Time.unscaledDeltaTime; // 델타타임 추가
-
-    //        float k = Mathf.SmoothStep(0, 1, t / animDuration); // 0~1로 보간
-
-    //        Vector2 lStart = leftMask.anchoredPosition; // 
-    //        Vector2 rStart = rightMask.anchoredPosition;
-
-    //        Vector2 lEnd = new Vector2(0, lStart.y);
-    //        Vector2 rEnd = new Vector2(0, rStart.y);
-
-    //        leftMask.anchoredPosition = Vector2.Lerp(lEnd, lStart, k);
-    //        rightMask.anchoredPosition = Vector2.Lerp(rEnd, rStart, k);
-    //    }
-    //    SceneManager.sceneLoaded -= OnSceneLoaded;
-    //}
 }

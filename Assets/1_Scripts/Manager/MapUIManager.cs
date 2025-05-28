@@ -127,9 +127,19 @@ public class MapUIManager : BaseUIManager
         _ => "???"
     };
 
+    private void ClearMapDeckContent()
+    {
+        foreach (Transform child in mapDeckContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
     private void LoadDeck()
     {
-        foreach (CardData data in BattleCardManager.BattleCardManagerInstance.GetDeckData())
+        ClearMapDeckContent();
+
+        foreach (CardData data in BattleCardManager.instance.GetDeckData())
         {
             GameObject currentCard = Instantiate(cardPrefab);
             currentCard.GetComponent<Card>().SetData(data);

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class TitleUIManager : BaseUIManager
 {
     [Header("Title Popups")]
+    GameObject canvas;
     public GameObject settingPopup;
     public GameObject creditPopup;
     public GameObject quitGameCheckPopup;
@@ -47,10 +48,10 @@ public class TitleUIManager : BaseUIManager
     public override void Initialize()
     {
         SetupButtonEvents();
-       
-        settingPopup = GameObject.Find("Setting_canvas");
-        creditPopup = transform.Find("Credit_canvas").gameObject;
-        quitGameCheckPopup = transform.Find("QuitGameCheck_canvas").gameObject;
+        canvas = GameObject.Find("Canvas");
+        settingPopup = canvas.transform?.Find("Setting_canvas")?.gameObject;
+        creditPopup = canvas.transform?.Find("Credit_canvas")?.gameObject;
+        quitGameCheckPopup = canvas.transform?.Find("QuitGameCheck_canvas")?.gameObject;
         CloseAllPopups();
     }
 
@@ -66,12 +67,12 @@ public class TitleUIManager : BaseUIManager
     {
         // 게임 초기화
         PlayerManager.instance.ResetPieces();
-        var list = BattleCardManager.BattleCardManagerInstance.initDeckIndices;
+        var list = BattleCardManager.instance.initDeckIndices;
         list.Clear();
         list.AddRange(new[] { 0, 0, 1, 1, 3, 3, 8, 10, 11, 12 });
 
         // 씬 전환
-        SceneChageManager.Instance.ChangeGameState(GameState.Map);
+        SceneChangeManager.Instance.ChangeGameState(GameState.Map);
     }
 
     public void ToggleSetting() => TogglePopup(settingPopup);

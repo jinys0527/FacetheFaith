@@ -24,110 +24,95 @@ public class PieceControlManager : MonoBehaviour
 
     public Piece piece;
     public bool isPlace = false;
-    public bool CanMove = false;
+    public bool canMove = false;
 
     public bool preventEffect = false;
 
     public bool blockPiece = false;
 
+    public const int MAXPIECECOUNT = 6;
+
     // Update is called once per frame
     public void PieceControlUpdate()
     {
+        if (BattleManager.instance.GetState() is eBattleState.GameOver or eBattleState.StageClear)
+            return;
+
+        UpdatePlaceAndMoveFlags();
+
         if (Input.GetMouseButtonDown(0))
         {
-            if (BattleManager.BattleManagerInstance != null)
-            {
-                isPlace = BattleManager.BattleManagerInstance.GetCanLayOut();
-                CanMove = BattleManager.BattleManagerInstance.GetIsPlayerTurn();
-            }
-            else
-            {
-                isPlace = true;
-                CanMove = false;
-            }
-            if(BattleManager.BattleManagerInstance.GetState() != eBattleState.GameOver && BattleManager.BattleManagerInstance.GetState() != eBattleState.StageClear)
-                SelectPiece();
+            HandleMouseDown();
         }
         if (Input.GetMouseButton(0))
         {
-            DragPiece();
+            HandleMouseDrag();
         }
         if (Input.GetMouseButtonUp(0))
         {
-            //Debug.Log(isPlace);
-            if (isPlace)
-                PlacePiece();
-            else
-                MovePiece();
+            HandleMouseUp();
         }
-        if (BattleManager.BattleManagerInstance != null)
-            if (!BattleManager.BattleManagerInstance.GetCanLayOut())
+        if (BattleManager.instance != null && !BattleManager.instance.GetCanLayOut())
+        {
+            HandleNumberKeyInput();
+        } 
+    }
+
+    private void HandleMouseDown() => SelectPiece();
+    private void HandleMouseDrag() => DragPiece();
+    private void HandleMouseUp()
+    {
+        if (isPlace)
+        {
+            PlacePiece();
+        }
+        else
+        {
+            MovePiece();
+        }
+    }
+
+    private void UpdatePlaceAndMoveFlags()
+    {
+        if (BattleManager.instance != null)
+        {
+            isPlace = BattleManager.instance.GetCanLayOut();
+            canMove = BattleManager.instance.GetIsPlayerTurn();
+        }
+        else
+        {
+            isPlace = true;
+            canMove = false;
+        }
+    }
+
+    private void HandleNumberKeyInput()
+    {
+        if (piece != null) return;
+        if (BattlePieceManager.instance.pieces.Count == 0) return;
+
+        for (int i = 0; i < BattlePieceManager.instance.pieces.Count && i < MAXPIECECOUNT; i++)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
             {
-                if (Input.GetKeyDown(KeyCode.Alpha1))
-                {
-                    if (BattlePieceManager.instance.pieces.Count >= 1)
-                        if (piece == null)
-                    {
-                        BattlePieceManager.instance.DisableEffectPieces();
-                        BattlePieceManager.instance.EffectSelectedPiece(GameObject.Find("StatusInfoUI").GetComponent<StatusInfoUI>().pieces[0].GetComponent<StatusPiece>().piece);
-                        PieceControlManager.instance.preventEffect = false;
-                    }
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha2))
-                {
-                    if (BattlePieceManager.instance.pieces.Count >= 2)
-                        if (piece == null)
-                    {
-                        BattlePieceManager.instance.DisableEffectPieces();
-                        BattlePieceManager.instance.EffectSelectedPiece(GameObject.Find("StatusInfoUI").GetComponent<StatusInfoUI>().pieces[1].GetComponent<StatusPiece>().piece);
-                        PieceControlManager.instance.preventEffect = false;
-                    }
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha3))
-                {
-                    if (BattlePieceManager.instance.pieces.Count >= 3)
-                        if (piece == null)
-                    {
-                        BattlePieceManager.instance.DisableEffectPieces();
-                        BattlePieceManager.instance.EffectSelectedPiece(GameObject.Find("StatusInfoUI").GetComponent<StatusInfoUI>().pieces[2].GetComponent<StatusPiece>().piece);
-                        PieceControlManager.instance.preventEffect = false;
-                    }
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha4))
-                {
-                    if (BattlePieceManager.instance.pieces.Count >= 4)
-                        if (piece == null)
-                    {
-                        BattlePieceManager.instance.DisableEffectPieces();
-                        BattlePieceManager.instance.EffectSelectedPiece(GameObject.Find("StatusInfoUI").GetComponent<StatusInfoUI>().pieces[3].GetComponent<StatusPiece>().piece);
-                        PieceControlManager.instance.preventEffect = false;
-                    }
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha5))
-                {
-                    if (BattlePieceManager.instance.pieces.Count >= 5)
-                        if (piece == null)
-                    {
-                        BattlePieceManager.instance.DisableEffectPieces();
-                        BattlePieceManager.instance.EffectSelectedPiece(GameObject.Find("StatusInfoUI").GetComponent<StatusInfoUI>().pieces[4].GetComponent<StatusPiece>().piece);
-                        PieceControlManager.instance.preventEffect = false;
-                    }
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha6))
-                {
-                    if(BattlePieceManager.instance.pieces.Count>=6)
-                    if (piece == null)
-                    {
-                        BattlePieceManager.instance.DisableEffectPieces();
-                        BattlePieceManager.instance.EffectSelectedPiece(GameObject.Find("StatusInfoUI").GetComponent<StatusInfoUI>().pieces[5].GetComponent<StatusPiece>().piece);
-                        PieceControlManager.instance.preventEffect = false;
-                    }
-                }
+                BattlePieceManager.instance.DisableEffectPieces();
+                var pieceToSelect = GameObject.Find("StatusInfoUI").GetComponent<StatusInfoUI>().pieces[i].GetComponent<StatusPiece>().piece;
+                BattlePieceManager.instance.EffectSelectedPiece(pieceToSelect);
+                PieceControlManager.instance.preventEffect = false;
+                break;
             }
+        }
+    }
+    private void EndPieceAction()
+    {
+        piece = null;
+        MovementManager.instance.InvalidateAll();
+        EffectManager.instance.ClearPlaceEffects();
     }
 
     void SelectPiece()
     {
+        print(1);
         if (blockPiece)
             return;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -135,13 +120,13 @@ public class PieceControlManager : MonoBehaviour
 
         if (piece != null)
         {
-
-            var moves = BoardManager.instance.GetFrontTwoRaws();
+            var moves = BoardManager.instance.GetFrontTwoRows();
             EffectManager.instance.ShowPlaceEffects(moves);
             BattlePieceManager.instance.EffectSelectedPiece(piece);
 
             return;
         }
+
         foreach (var hit in hits)
         {
             if (hit.collider.CompareTag("Piece"))
@@ -161,7 +146,7 @@ public class PieceControlManager : MonoBehaviour
 
                 if (isPlace)
                 {
-                    var moves = BoardManager.instance.GetFrontTwoRaws(); //
+                    var moves = BoardManager.instance.GetFrontTwoRows();
                     EffectManager.instance.ShowPlaceEffects(moves);
 
                 }
@@ -183,7 +168,82 @@ public class PieceControlManager : MonoBehaviour
         piece = null;
         EffectManager.instance.ClearPlaceEffects();
     }
+    
+    private (Node lastNode, bool blocked, int x, int y) GetLastNodeFromRay()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits = Physics.RaycastAll(ray);
 
+        int x = -1, y = -1;
+        Node lastNode = null;
+        bool blocked = false;
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (!hit.collider.CompareTag("Node")) continue;
+
+            Node node = hit.collider.GetComponent<Node>();
+
+            // 기존 필터 로직
+            if (x != -1 && y != -1)
+            {
+                if (node.GridPos.y > y) continue;
+                if ((node.GridPos.x <= 3 && x > node.GridPos.x) ||
+                    (node.GridPos.x >= 3 && x < node.GridPos.x))
+                    continue;
+            }
+
+            // 장애물 / 아군 차단
+            if (BoardManager.instance != null)
+            {
+                if (BoardManager.instance.IsBlocked(node.GridPos))
+                {
+                    blocked = true;
+                    x = node.GridPos.x;
+                    y = node.GridPos.y;
+                    continue; 
+                }
+            }
+            else if(MapManager.instance != null)
+            { 
+                if (MapManager.instance.IsBlocked(node.GridPos))
+                {
+                    blocked = true;
+                    x = node.GridPos.x;
+                    y = node.GridPos.y;
+                    continue;
+                }
+            }
+
+            // 빈 칸 발견 => 후보로 저장 (하지만 아직 piece 좌표는 건드리지 않음)
+            blocked = false;
+            x = node.GridPos.x;
+            y = node.GridPos.y;
+            lastNode = node;
+        }
+
+        return (lastNode, blocked, x, y);
+    }
+
+    private void UpdatePiecePosition(Piece piece, Node targetNode, bool addPiece = false)
+    {
+        SoundManager.Instance.PlaySFX(e_SFXname.s_Piece_Move);
+        if (piece.node != null)
+            piece.node.currentPiece = null;
+
+        targetNode.currentPiece = piece.gameObject;
+        piece.node = targetNode;
+
+        piece.x = targetNode.GridPos.x;
+        piece.y = targetNode.GridPos.y;
+
+        if(addPiece)
+        {
+            BattlePieceManager.instance.AddPiece(piece);
+        }
+
+        piece.RePositioning();
+    }
 
     void MovePiece()
     {
@@ -201,78 +261,18 @@ public class PieceControlManager : MonoBehaviour
 
         BattlePieceManager.instance.DisableEffectPieces();
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] hits = Physics.RaycastAll(ray);
+        var (lastNode, blocked, x, y) = GetLastNodeFromRay();
 
-        int x = -1, y = -1;
-        Node lastNode = null;
-        bool blocked = false;
-
-        foreach (RaycastHit hit in hits)
-        {
-            if (!hit.collider.CompareTag("Node")) continue;
-
-            Node node = hit.collider.GetComponent<Node>();
-
-            /* 기존 필터 로직 --------------------------------------------------- */
-            if (x != -1 && y != -1)
-            {
-                if (node.GridPos.y > y) continue;
-                if ((node.GridPos.x <= 3 && x > node.GridPos.x) ||
-                    (node.GridPos.x >= 3 && x < node.GridPos.x))
-                    continue;
-            }
-
-            /* 장애물 / 아군 차단 ---------------------------------------------- */
-            if (BoardManager.instance != null) // 보드매니저있으면 아래
-            {
-                if (BoardManager.instance.IsBlocked(node.GridPos))
-                {
-                    blocked = true;
-                    x = node.GridPos.x;
-                    y = node.GridPos.y;
-                    continue; // 막혔으면 더 진행 안 함
-                }
-            }
-            else { // 없으면 맵매니저 있을테니까 여기
-                if (MapManager.instance.IsBlocked(node.GridPos))
-                {
-                    blocked = true;
-                    x = node.GridPos.x;
-                    y = node.GridPos.y;
-                    continue; // 막혔으면 더 진행 안 함
-                }
-            }
-
-
-                /* 빈 칸 발견 => 후보로 저장 (하지만 아직 piece 좌표는 건드리지 않음) */
-                blocked = false;
-            x = node.GridPos.x;
-            y = node.GridPos.y;
-            lastNode = node;
-        }
-
-        /* ---------------------------------------------------------------------- */
-        /* 이동 가능성 최종 확인 + 좌표/노드 교체                                */
-        /* ---------------------------------------------------------------------- */
-        if (lastNode != null && !blocked && piece.canMove && CanMove)
+       
+        // 이동 가능성 최종 확인 + 좌표/노드 교체 
+        if (lastNode != null && !blocked && piece.canMove && canMove)
         {
             var moves = MovementManager.instance.GetMoves(piece);
             if (moves.Contains(lastNode))          // 합법 이동
             {
-                SoundManager.Instance.PlaySFX(e_SFXname.s_Piece_Move);
-                /* 노드 링크 교체 */
-                if (piece.node != null)
-                    piece.node.currentPiece = null;
+                UpdatePiecePosition(piece, lastNode, false);
 
-                lastNode.currentPiece = piece.gameObject;
-                piece.node = lastNode;
-
-                /* 이때 좌표를 확정적으로 갱신 */
-                piece.x = lastNode.GridPos.x;
-                piece.y = lastNode.GridPos.y;
-
-                if (BattleManager.BattleManagerInstance != null)
+                if (BattleManager.instance != null)
                 {
                     piece.canMove = false;
                 }
@@ -280,22 +280,23 @@ public class PieceControlManager : MonoBehaviour
                 if (MapManager.instance != null)
                 {
                     MapManager.instance.RevealNextNodesOnly(lastNode);
-                    //MapManager.instance.RevealPathToTarget(originNode, lastNode);
                 }
 
                 piece.ReColor();
             }
+            else
+            {
+                // 이동 불가 -> 원래 자리로 되돌리기
+                piece.RePositioning();
+            }
         }
-
-
-        /* 스냅 또는 원복 */
-        piece.RePositioning();
-        piece = null;
-
-        MovementManager.instance.InvalidateAll();
-        EffectManager.instance.ClearPlaceEffects();
-        Debug.Log($"last = ({x},{y})");
-        Debug.DrawRay(ray.origin, ray.direction, Color.red);
+        else
+        {
+            // 이동 불가 -> 원래 자리로 되돌리기
+            if (piece != null)
+                piece.RePositioning();
+        }
+        EndPieceAction();
     }
 
 
@@ -311,74 +312,58 @@ public class PieceControlManager : MonoBehaviour
             if (t >= 0)
             {
                 Vector3 groundPoint = ray.origin + ray.direction * t;
+                print(groundPoint);
                 piece.gameObject.transform.position = new Vector3(groundPoint.x, 0, groundPoint.z);
             }
             else
+            {
                 piece.gameObject.transform.position = new Vector3(0, 0, -100);
+            }
         }
+    }
+
+
+    private void SwapPieces(Piece pieceA, Piece pieceB)
+    {
+        Node nodeA = pieceA.node;
+        Node nodeB = pieceB.node;
+
+        // Swap nodes' currentPiece references
+        nodeA.currentPiece = pieceB.gameObject;
+        nodeB.currentPiece = pieceA.gameObject;
+
+        // Swap pieces' node references
+        pieceA.node = nodeB;
+        pieceB.node = nodeA;
+
+        // Swap grid positions
+        int tempX = pieceA.x;
+        int tempY = pieceA.y;
+
+        pieceA.x = pieceB.x;
+        pieceA.y = pieceB.y;
+        pieceB.x = tempX;
+        pieceB.y = tempY;
+
+        pieceA.RePositioning();
+        pieceB.RePositioning();
     }
 
     void PlacePiece()
     {
         if (piece == null) return;
-        //isPlace = false;
+
         BattlePieceManager.instance.DisableEffectPieces();
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] hits = Physics.RaycastAll(ray);
+        var (lastNode, blocked, x, y) = GetLastNodeFromRay();
 
-        int x = -1, y = -1;
-        Node lastNode = null;
-        bool blocked = false;
-
-        foreach (RaycastHit hit in hits)
-        {
-            if (!hit.collider.CompareTag("Node")) continue;
-
-            Node node = hit.collider.GetComponent<Node>();
-
-            /* 기존 필터 로직 --------------------------------------------------- */
-            if (x != -1 && y != -1)
-            {
-                if (node.GridPos.y > y) continue;
-                if ((node.GridPos.x <= 3 && x > node.GridPos.x) ||
-                    (node.GridPos.x >= 3 && x < node.GridPos.x))
-                    continue;
-            }
-
-            /* 장애물 / 아군 차단 ---------------------------------------------- */
-            if (BoardManager.instance.IsBlocked(node.GridPos))
-            {
-                blocked = true;
-            }
-            else
-                blocked = false;
-            /* 빈 칸 발견 => 후보로 저장 (하지만 아직 piece 좌표는 건드리지 않음) */
-            x = node.GridPos.x;
-            y = node.GridPos.y;
-            lastNode = node;
-        }
-
-        /* ---------------------------------------------------------------------- */
-        /* 이동 가능성 최종 확인 + 좌표/노드 교체                                */
-        /* ---------------------------------------------------------------------- */
+        // 이동 가능성 최종 확인 + 좌표/노드 교체
         if (lastNode != null && !blocked)
         {
-            List<Node> moves = BoardManager.instance.GetFrontTwoRaws();
-            if (moves.Contains(lastNode) && (BattlePieceManager.instance.pieces.Count <= 5 || (BattlePieceManager.instance.pieces.Count == 6 && piece.node != null)))          // 합법 이동
+            List<Node> moves = BoardManager.instance.GetFrontTwoRows();
+            if (moves.Contains(lastNode) && (BattlePieceManager.instance.pieces.Count <= MAXPIECECOUNT - 1 || (BattlePieceManager.instance.pieces.Count == MAXPIECECOUNT && piece.node != null))) 
             {
-                /* 노드 링크 교체 */
-                if (piece.node != null)
-                    piece.node.currentPiece = null;
-
-                lastNode.currentPiece = piece.gameObject;
-                piece.node = lastNode;
-
-                /* 이때 좌표를 갱신 */
-                piece.x = lastNode.GridPos.x;
-                piece.y = lastNode.GridPos.y;
-                BattlePieceManager.instance.AddPiece(piece);
-                SoundManager.Instance.PlaySFX(e_SFXname.s_Piece_Move);
+                UpdatePiecePosition(piece, lastNode, true);
             }
             else
             {
@@ -387,50 +372,20 @@ public class PieceControlManager : MonoBehaviour
         }
         else if (lastNode != null && blocked)
         {
-            Debug.Log("잘됨");
             if (piece.node != lastNode)
             {
-                List<Node> moves = BoardManager.instance.GetFrontTwoRaws();
-                if (moves.Contains(lastNode))          // 합법 이동
+                List<Node> moves = BoardManager.instance.GetFrontTwoRows();
+                if (moves.Contains(lastNode)) 
                 {
                     if (piece.node == null)
                     {
-                        Piece currentPieceScript = lastNode.currentPiece.GetComponent<Piece>();
-                        //PieceManager.instance.SetCount(currentPieceScript.pieceVariant, currentPieceScript.level, PieceManager.instance.GetCount(currentPieceScript.pieceVariant, currentPieceScript.level) + 1);
-                        //Destroy(currentPieceScript.gameObject);
-                        BattlePieceManager.instance.DestroyPiece(currentPieceScript);
-
-                        if (piece.node != null)
-                            piece.node.currentPiece = null;
-
-                        lastNode.currentPiece = piece.gameObject;
-                        piece.node = lastNode;
-
-                        /* 이때 좌표를 확정적으로 갱신 */
-                        piece.x = lastNode.GridPos.x;
-                        piece.y = lastNode.GridPos.y;
-                        BattlePieceManager.instance.AddPiece(piece);
+                        BattlePieceManager.instance.DestroyPiece(lastNode.currentPiece.GetComponent<Piece>());
+                        UpdatePiecePosition(piece, lastNode, true);
                     }
                     else
                     {
                         Piece currentPieceScript = lastNode.currentPiece.GetComponent<Piece>();
-                        var temp = piece.node.currentPiece;
-
-                        piece.node.currentPiece = currentPieceScript.gameObject;
-                        currentPieceScript.node = piece.node;
-
-                        currentPieceScript.x = piece.x;
-                        currentPieceScript.y = piece.y;
-                        currentPieceScript.RePositioning();
-
-                        piece.node = lastNode;
-                        lastNode.currentPiece = piece.gameObject;
-
-                        /* 이때 좌표를 확정적으로 갱신 */
-
-
-                        piece.x = lastNode.GridPos.x;
-                        piece.y = lastNode.GridPos.y;
+                        SwapPieces(piece, currentPieceScript);
                     }
                     SoundManager.Instance.PlaySFX(e_SFXname.s_Piece_Move);
                 }
@@ -444,13 +399,7 @@ public class PieceControlManager : MonoBehaviour
         {
             BattlePieceManager.instance.DestroyPiece(piece);
         }
-        /* 스냅 또는 원복 */
-        piece.RePositioning();
-        piece = null;
-        MovementManager.instance.InvalidateAll();
-        EffectManager.instance.ClearPlaceEffects();
-        Debug.Log($"last = ({x},{y})");
-        Debug.DrawRay(ray.origin, ray.direction, Color.red);
 
+        EndPieceAction();
     }
 }

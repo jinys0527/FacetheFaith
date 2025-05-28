@@ -1,12 +1,9 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
-
-
-public class BoardManager : MonoBehaviour
+public class BoardManager : MonoBehaviour, IBoard
 {
-
-
     public static BoardManager instance;
     public static TestSpawner testSpawner;
 
@@ -28,10 +25,7 @@ public class BoardManager : MonoBehaviour
 
     public List<Node> frontTwoRows = new List<Node>();
 
-
-
-    private void Awake() // 씬넘겨도 유일성이 보존되는거지
-                         // 보드 매니저는 
+    private void Awake() 
     {
         if (instance == null)
         {
@@ -43,7 +37,6 @@ public class BoardManager : MonoBehaviour
         }
         GenerateBoard();
     }
-
 
     public int width = 7;
     public int height = 7;
@@ -59,17 +52,21 @@ public class BoardManager : MonoBehaviour
         return nodeSize;
     }
 
-
     void GenerateBoard() // 체스판 만드는 놈임
     {
+        frontTwoRows.Clear(); // 재생성 시 중복 방지
+
         grid = new Node[Width, Height];
 
         float offsetX = (Width - 1) * 0.5f;
+        int frontRowLimit = 2;
+        int inactiveRowStart = Height - 2; // 하드코딩 5 대신 유동적 처리
 
         for (int y = 0; y < Height; y++) //y 가 h -1,-2일 때 비활성화 x 5,6
+        {
             for (int x = 0; x < Width; x++)
             {
-                var world = new Vector3((x - offsetX)*nodeSize, 0, y - 5);
+                var world = new Vector3((x - offsetX) * nodeSize, 0, y - inactiveRowStart);
                 Node node = Instantiate(nodePrefab, world, Quaternion.identity, transform)
                                 .GetComponent<Node>();
                 node.transform.localScale = new Vector3(nodeSize, 0.5f, 1);
@@ -87,34 +84,24 @@ public class BoardManager : MonoBehaviour
                           isWhite ? NodeColorType.White : NodeColorType.Gray,
                           mat, frontmat);
 
-                int num;
-                if (MapManager.instance != null)
-                {
-                    num = MapManager.instance.currentStageNum;
-                }
-                else { // 디버깅용
-                    num = 1;
-                }
-                
-                if ((x == 0 || x == 6 || y >= 5)&& num<5)
+                int currentStageNum = MapManager.instance != null ? MapManager.instance.currentStageNum : 1;
+
+                if ((x == 0 || x == Width - 1 || y >= inactiveRowStart) && currentStageNum < 5)
                 {
                     node.gameObject.SetActive(false); // 6,6 비활성화
-                } 
-
-
+                }
 
                 grid[x, y] = node;
-                if (y < 2 && node.gameObject.activeSelf)
+
+                if (y < frontRowLimit && node.gameObject.activeSelf)
                 {
                     frontTwoRows.Add(node);
                 }
-
             }
-
-
+        }   
     }
 
-    public List<Node> GetFrontTwoRaws()
+    public List<Node> GetFrontTwoRows()
     {
         return frontTwoRows;
     }
@@ -128,8 +115,5 @@ public class BoardManager : MonoBehaviour
     {
         Node node = GetNode(pos);
         return node == null || node.IsOccupied()|| !node.gameObject.activeSelf;
-
     }
-
-
 }

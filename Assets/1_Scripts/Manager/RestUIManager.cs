@@ -19,10 +19,10 @@ public class RestUIManager : BaseUIManager
 
     public override void Initialize()
     {
-        upgradePopup = GameObject.Find("Upgrade_canavas");
-
         var canvas = GameObject.Find("Canvas");
-        mapDeckUI = canvas.transform.Find("MapDeckUI_Canvas").gameObject;
+        upgradePopup = canvas.transform.Find("Upgrade_canavas").gameObject;
+        mapDeckUI = canvas.transform.Find("MapDeckUI").gameObject;
+
         mapScrollRect = mapDeckUI.transform.Find("MapDeckScrollRect").GetComponent<ScrollRect>();
         mapDeckContent = mapScrollRect.transform.Find("Viewport/MapDeckContent").gameObject;
 
@@ -44,14 +44,24 @@ public class RestUIManager : BaseUIManager
     {
         upgradePopup?.SetActive(false);
         mapDeckUI?.SetActive(false);
+        DeleteCard.CancelDelete();
         isPopupOpen = false;
+    }
+
+    private void ClearMapDeckContent()
+    {
+        foreach (Transform child in mapDeckContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     private void LoadDeck()
     {
-        foreach (CardData data in BattleCardManager.BattleCardManagerInstance.GetDeckData())
+        ClearMapDeckContent();
+
+        foreach (CardData data in BattleCardManager.instance.GetDeckData())
         {
-            var cardPrefab = Resources.Load<GameObject>("CardPrefab");
             GameObject currentCard = Instantiate(cardPrefab);
             currentCard.GetComponent<Card>().SetData(data);
             currentCard.transform.SetParent(mapDeckContent.transform);
@@ -64,7 +74,8 @@ public class RestUIManager : BaseUIManager
 
     public void OnUpgradeBackButtonClicked()
     {
-        upgradePopup?.SetActive(false);
+        upgradePopup?.SetActive(true);
+        UpgradePieceUI.UpdateUpgradeUI();
         isPopupOpen = true;
     }
 

@@ -545,9 +545,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardTable: {fileID: 11400000, guid: 36a448044edc70a458ba3c30eb6bb659, type: 2}
   initDeckIndices: 00000000010000000200000003000000040000000500000006000000070000000800000009000000
-  m_deckCount: 0
-  m_handCount: 0
-  m_graveCount: 0
   radius: 0
   maxAngle: 0
   minAngle: 0
@@ -1087,17 +1084,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c87674500e45ef429e85ab87f79c0be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pawnCount: 0
-  knightCount: 0
-  bishopCount: 0
-  rookCount: 0
-  queenCount: 0
-  upgradedPawnCount: 0
-  upgradedKnightCount: 0
-  upgradedBishopCount: 0
-  upgradedRookCount: 0
-  upgradedQueenCount: 0
   pieces: []
+  inventoryPieces: []
 --- !u!4 &256491576
 Transform:
   m_ObjectHideFlags: 0
@@ -4689,16 +4677,6 @@ MonoBehaviour:
   cost: 5
   maxCost: 5
   carryOverCost: 0
-  pawnCount: 0
-  knightCount: 1
-  bishopCount: 0
-  rookCount: 1
-  queenCount: 0
-  upgradedPawnCount: 1
-  upgradedKnightCount: 0
-  upgradedBishopCount: 0
-  upgradedRookCount: 0
-  upgradedQueenCount: 0
 --- !u!4 &1681728415
 Transform:
   m_ObjectHideFlags: 0
@@ -5886,7 +5864,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1976720090}
-  - component: {fileID: 1976720091}
   m_Layer: 5
   m_Name: MapDeckUI_Canvas
   m_TagString: Untagged
@@ -5916,18 +5893,6 @@ RectTransform:
   m_AnchoredPosition: {x: -97.5, y: 0}
   m_SizeDelta: {x: 1635, y: 850}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1976720091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1976720089}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8aee150740f060469874725a7823405, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2029423291
 GameObject:
   m_ObjectHideFlags: 0
@@ -5990,7 +5955,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2033189370
 RectTransform:
   m_ObjectHideFlags: 0

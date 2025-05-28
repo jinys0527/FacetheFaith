@@ -45,21 +45,21 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         switch(cardZone)
         {
             case CardZone.MapDeck:
-                if(BaseUIManager.Instance.MapDeckHoverLayer != null)
+                if(GameManager.instance.CurrentUIManager.MapDeckHoverLayer != null)
                 {
-                    hoverLayer = BaseUIManager.Instance.MapDeckHoverLayer.transform;
+                    hoverLayer = GameManager.instance.CurrentUIManager.MapDeckHoverLayer.transform;
                 }
                 break;
             case CardZone.Deck:
-                if(BaseUIManager.Instance.DeckHoverLayer != null)
+                if(GameManager.instance.CurrentUIManager.DeckHoverLayer != null)
                 {
-                    hoverLayer = BaseUIManager.Instance.DeckHoverLayer.transform;
+                    hoverLayer = GameManager.instance.CurrentUIManager.DeckHoverLayer.transform;
                 }
                 break;
             case CardZone.Grave:
-                if (BaseUIManager.Instance.GraveHoverLayer != null)
+                if (GameManager.instance.CurrentUIManager.GraveHoverLayer != null)
                 {
-                    hoverLayer = BaseUIManager.Instance.GraveHoverLayer.transform;
+                    hoverLayer = GameManager.instance.CurrentUIManager.GraveHoverLayer.transform;
                 }
                 break;
             default:
@@ -93,7 +93,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         if(GameManager.instance.currentState == GameState.Stage_Battle)
         {
-            BattleCardManager.BattleCardManagerInstance.OnBeginDragEvent(gameObject);
+            BattleCardManager.instance.OnBeginDragEvent(gameObject);
         }
     }
 
@@ -101,7 +101,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         if (GameManager.instance.currentState == GameState.Stage_Battle)
         {
-            BattleCardManager.BattleCardManagerInstance.OnDragEvent(gameObject);
+            BattleCardManager.instance.OnDragEvent(gameObject);
         }
     }
 
@@ -109,7 +109,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         if (GameManager.instance.currentState == GameState.Stage_Battle)
         {
-            BattleCardManager.BattleCardManagerInstance.OnEndDragEvent(gameObject);
+            BattleCardManager.instance.OnEndDragEvent(gameObject);
         }
     }
 }

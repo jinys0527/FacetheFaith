@@ -15,11 +15,14 @@ public class MapSelectionManager : MonoBehaviour
 
     void Start()
     {
-        if (MapManager.instance.ismap)
+        if (MapManager.instance.ismap && MapManager.instance.piecePrefab != null)
         {
             king = MapManager.instance.piecePrefab.GetComponent<Piece>();
-            //Debug.Log("왕 기물: " + king.name);
-            //PieceControlManager.instance?.gameObject.SetActive(false);   // 혹시 모를 잔여 입력 제거
+        }
+
+        if (king == null)
+        {
+            Debug.LogError("king이 null입니다. MapManager 설정을 확인하세요.");
         }
     }
 
@@ -29,26 +32,31 @@ public class MapSelectionManager : MonoBehaviour
 
         if (EventSystem.current.IsPointerOverGameObject()) return;   // UI 위 클릭 차단
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.CompareTag("Node"))
+        Node clickNode = GetClickNode();
+        if(clickNode == null) return;
+
+        if (CanMoveTo(clickNode))
         {
-            Node node = hit.collider.GetComponent<Node>();
-
-            
-            Node curNode = king.node;   // 현재 위치
-            
-            bool isNextStage = node.stageIndex == MapManager.instance.currentStageNum + 1;
-            bool isReachable = curNode != null && curNode.nextNodes.Contains(node);
-
-            if (node.isStageNode && isNextStage && isReachable)
-            {
-                node.setMaterial(icon);
-                StartCoroutine(MoveAndLoad(node));
-            }
+            clickNode.setMaterial(icon);
+            StartCoroutine(MoveAndLoad(clickNode));
         }
     }
 
+    private Node GetClickNode()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        return Physics.Raycast(ray, out RaycastHit hit) && hit.collider.CompareTag("Node") ? hit.collider.GetComponent<Node>() : null;
+    }
 
+    private bool CanMoveTo(Node node)
+    {
+        Node curNode = king.node;   // 현재 위치
+
+        return node.isStageNode
+            && node.stageIndex == MapManager.instance.currentStageNum + 1
+            && curNode != null
+            && curNode.nextNodes.Contains(node);
+    }
 
     IEnumerator MoveAndLoad(Node target)
     {
@@ -57,7 +65,7 @@ public class MapSelectionManager : MonoBehaviour
         /* 1) 기물 부드럽게 이동 */
         Vector3 start = king.transform.position;
         Vector3 end = target.transform.position + Vector3.up * 0.01f;
-        //Vector3 end = new Vector3 (target.transform.position.x, target.transform.position.y,-10) + Vector3.up * 0.01f;
+
         float t = 0;
         while (t < moveTime)
         {
@@ -97,9 +105,7 @@ public class MapSelectionManager : MonoBehaviour
                 StageNodeType.Unknown => GameState.Stage_Random,
                 _ => GameState.Map
             };
-        Debug.Log("GM 접근 직전 : " + (GameManager.instance == null));
 
-        //GameManager.instance.SetGameState(next); // 맵 로드 잠시 중단
-        SceneChageManager.Instance.ChangeGameState(next); // 씬 전환
+        SceneChangeManager.Instance.ChangeGameState(next); // 씬 전환
     }
 }

@@ -12,52 +12,52 @@ public class PlaceInfoUI : MonoBehaviour
     {
         int count = 0;
 
-        if (PlayerManager.instance.pawnCount > 0)
+        if (PlayerManager.instance.pieceCounts[PieceVariant.Pawn] > 0)
         { 
             sort[count] = UIpieces[0];
             count++;
         }
-        if (PlayerManager.instance.upgradedPawnCount > 0)
+        if (PlayerManager.instance.upgradedPieceCounts[PieceVariant.Pawn] > 0)
         {
             sort[count] = UIpieces[1];
             count++;
         }
-        if (PlayerManager.instance.knightCount > 0)
+        if (PlayerManager.instance.pieceCounts[PieceVariant.Knight] > 0)
         {
             sort[count] = UIpieces[2];
             count++;
         }
-        if (PlayerManager.instance.upgradedKnightCount > 0)
+        if (PlayerManager.instance.upgradedPieceCounts[PieceVariant.Knight] > 0)
         {
             sort[count] = UIpieces[3];
             count++;
         }
-        if (PlayerManager.instance.rookCount > 0)
+        if (PlayerManager.instance.pieceCounts[PieceVariant.Rook] > 0)
         {
             sort[count] = UIpieces[4];
             count++;
         }
-        if (PlayerManager.instance.upgradedRookCount > 0)
+        if (PlayerManager.instance.upgradedPieceCounts[PieceVariant.Rook] > 0)
         {
             sort[count] = UIpieces[5];
             count++;
         }
-        if (PlayerManager.instance.bishopCount > 0)
+        if (PlayerManager.instance.pieceCounts[PieceVariant.Bishop] > 0)
         {
             sort[count] = UIpieces[6];
             count++;
         }
-        if (PlayerManager.instance.upgradedBishopCount > 0)
+        if (PlayerManager.instance.upgradedPieceCounts[PieceVariant.Bishop] > 0)
         {
             sort[count] = UIpieces[7];
             count++;
         }
-        if (PlayerManager.instance.queenCount > 0)
+        if (PlayerManager.instance.pieceCounts[PieceVariant.Queen] > 0)
         {
             sort[count] = UIpieces[8];
             count++;
         }
-        if (PlayerManager.instance.upgradedQueenCount > 0)
+        if (PlayerManager.instance.upgradedPieceCounts[PieceVariant.Queen] > 0)
         {
             sort[count] = UIpieces[9];
             count++;
@@ -78,6 +78,11 @@ public class PlaceInfoUI : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             sort[i].SetActive(true);
+        }
+
+        if (GameManager.instance.currentState == GameState.Stage_Battle)
+        {
+            BattlePieceManager.instance.inventoryPieces = GameObject.Find("Canvas_Overlay").GetComponentsInChildren<InventoryPiece>();
         }
     }
 }

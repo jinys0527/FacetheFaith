@@ -4,11 +4,36 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+public static class PieceSpriteDB
+{
+    public static Sprite pawnSprite;
+    public static Sprite knightSprite;
+    public static Sprite rookSprite;
+    public static Sprite bishopSprite;
+    public static Sprite queenSprite;
+
+    public static void Load()
+    {
+        pawnSprite = Resources.Load<Sprite>("Image/Chess/Piece/Pawn");
+        knightSprite = Resources.Load<Sprite>("Image/Chess/Piece/Knight");
+        rookSprite = Resources.Load<Sprite>("Image/Chess/Piece/Rook");
+        bishopSprite = Resources.Load<Sprite>("Image/Chess/Piece/Bishop");
+        queenSprite = Resources.Load<Sprite>("Image/Chess/Piece/Queen");
+    }
+}
+
 public class UpgradePiece : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IPointerUpHandler
 {
+    GameObject clickedObject;
+
+    private void OnEnable()
+    {
+        PieceSpriteDB.Load();
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
-        GameObject clickedObject = eventData.pointerCurrentRaycast.gameObject;
+        clickedObject = eventData.pointerCurrentRaycast.gameObject;
 
         if (clickedObject == gameObject)
         {
@@ -18,19 +43,30 @@ public class UpgradePiece : MonoBehaviour, IPointerDownHandler, IPointerClickHan
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Image img = clickedObject.GetComponent<Image>();
+        if (img == null || img.sprite == null) return;
+
+        Sprite clickedSprite = img.sprite;
         PieceVariant pieceVariant = PieceVariant.None;
-        if (gameObject.name == "Pawn")
+
+        if (clickedSprite == PieceSpriteDB.pawnSprite)
             pieceVariant = PieceVariant.Pawn;
-        else if (gameObject.name == "Knight")
+        else if (clickedSprite == PieceSpriteDB.knightSprite)
             pieceVariant = PieceVariant.Knight;
-        else if (gameObject.name == "Rook")
+        else if (clickedSprite == PieceSpriteDB.rookSprite)
             pieceVariant = PieceVariant.Rook;
-        else if (gameObject.name == "Bishop")
+        else if (clickedSprite == PieceSpriteDB.bishopSprite)
             pieceVariant = PieceVariant.Bishop;
-        else if (gameObject.name == "Queen")
+        else if (clickedSprite == PieceSpriteDB.queenSprite)
             pieceVariant = PieceVariant.Queen;
-        PlayerManager.instance.UpgradePiece(pieceVariant);
-        SceneChageManager.Instance.ChangeGameState(GameState.Map);
+        else
+            Debug.LogWarning("알 수 없는 스프라이트: " + clickedSprite.name);
+
+        if (pieceVariant != PieceVariant.None)
+        {
+            PlayerManager.instance.UpgradePiece(pieceVariant);
+            SceneChangeManager.Instance.ChangeGameState(GameState.Map);
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)

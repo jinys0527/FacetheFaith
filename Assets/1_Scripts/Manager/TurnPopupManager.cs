@@ -12,6 +12,8 @@ public class TurnPopupManager : MonoBehaviour
     public float fadeDuration = 1.0f;
     public float showDuration = 1.5f;
 
+    private Coroutine currentCoroutine;
+
     private void Awake()
     {
         // ΩÃ±€≈Ê ∆–≈œ √≥∏Æ
@@ -37,43 +39,39 @@ public class TurnPopupManager : MonoBehaviour
         StartCoroutine(FadeSequence(enemyTurn_image));
     }
 
+    private void ShowTurn(Image image)
+    {
+        if(currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine);
+        }
+        currentCoroutine = StartCoroutine(FadeSequence(image));
+    }
+
     public IEnumerator FadeSequence(Image img)
     {
-        yield return StartCoroutine(FadeIn(img));
+        GameManager.instance.CurrentUIManager.isPopupOpen = true;
+        yield return StartCoroutine(FadeToAlpha(img, 1f));
         yield return new WaitForSeconds(showDuration);
-        yield return StartCoroutine(FadeOut(img));
+        yield return StartCoroutine(FadeToAlpha(img, 0f));
+        GameManager.instance.CurrentUIManager.isPopupOpen = false;
     }
 
-    private IEnumerator FadeIn(Image img)
+    private IEnumerator FadeToAlpha(Image img, float targetAlpha)
     {
+        float startAlpha = img.color.a;
         float t = 0f;
         Color color = img.color;
+
         while (t < fadeDuration)
         {
             t += Time.deltaTime;
-            color.a = Mathf.Lerp(0f, 1f, t / fadeDuration);
-            img.color = color;
+            float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / fadeDuration);
+            img.color = new Color(color.r, color.g, color.b, alpha);
             yield return null;
         }
-        color.a = 1f;
-        img.color = color;
-        BaseUIManager.Instance.isPopupOpen = true;
-    }
 
-    private IEnumerator FadeOut(Image img)
-    {
-        float t = 0f;
-        Color color = img.color;
-        while (t < fadeDuration)
-        {
-            t += Time.deltaTime;
-            color.a = Mathf.Lerp(1f, 0f, t / fadeDuration);
-            img.color = color;
-            yield return null;
-        }
-        color.a = 0f;
-        img.color = color;
-        BaseUIManager.Instance.isPopupOpen = false;
+        img.color = new Color(color.r, color.g, color.b, targetAlpha);
     }
 
     private void SetAlpha(Image img, float alpha)

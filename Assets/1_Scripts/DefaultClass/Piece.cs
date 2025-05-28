@@ -54,7 +54,7 @@ public class Piece : MonoBehaviour
 
     public bool canMove = true;
     bool canAttack = true;
-    bool isDistort = false;
+    public bool isDistort = false;
     public int attackCount = 1;
     public float currentDamage;
     public bool isDamageImmune = false;

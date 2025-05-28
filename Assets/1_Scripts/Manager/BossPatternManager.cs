@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -12,12 +13,13 @@ public struct NodeAttackInfo
 
     public override bool Equals(object obj)
     {
-        return obj is NodeAttackInfo other && this.position == other.position;
+        if (obj is not NodeAttackInfo other) return false;
+        return position.Equals(other.position) && attackType == other.attackType;
     }
 
     public override int GetHashCode()
     {
-        return position.GetHashCode();
+        return HashCode.Combine(position, attackType);
     }
 }
 
@@ -54,46 +56,33 @@ public class BossPatternManager : MonoBehaviour
 
     public int index;
 
-    public int GetIndex()
-    {
-        return index;
-    }
-
     /* -------------- API -------------- */
 
     /// 패턴 인덱스로 경고 표시
-    public void Play(int index)
+    public void Play()
     {
         EffectManager.instance.ClearBossEffects();
-        patterns = BattleManager.BattleManagerInstance.monster.GetComponent<Monster>().monsterData.attackPattern;
-        if (index < 0 || index >= patterns.Count) return;
+        patterns = BattleManager.instance.monster.GetComponent<Monster>().monsterData.attackPattern;
 
         // 1) 노드 목록 생성
         nodeList = new();
 
-        int randomIndex = UnityEngine.Random.Range(0, patterns.Count);
-        foreach (var cell in patterns[randomIndex].nodes)
+        index = UnityEngine.Random.Range(0, patterns.Count);
+        foreach (var cell in patterns[index].nodes)
         {
-            Node n = board.GetNode(cell.position);     // 좌표  Node
-            n.monsterAttackType = cell.attackType;
-            if (n != null && n.gameObject.activeSelf) nodeList.Add(n);
+            Node n = board.GetNode(cell.position);
+            if (n != null && n.gameObject.activeSelf)
+            {
+                n.monsterAttackType = cell.attackType;
+                nodeList.Add(n);
+            }
         }
 
         // 2) 이펙트 매니저 호출
         EffectManager.instance.ShowBossEffects(nodeList);
 
-        // 3) 지정 시간 뒤 지우기
-        //StopAllCoroutines();                  // 중복 호출 대비
-        //StartCoroutine(ClearAfterDelay());
     }
 
     public float WarningTime => warningTime;
     public int PatternCount => patterns.Count;
-
-    /* -------------- 내부 -------------- */
-    IEnumerator ClearAfterDelay()
-    {
-        yield return new WaitForSeconds(warningTime);
-        EffectManager.instance.ClearBossEffects();
-    }
 }

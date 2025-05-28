@@ -50,7 +50,8 @@ public class SoundManager : MonoBehaviour
     public static SoundManager Instance;
 
     public AudioSource bgmSource;
-    public AudioSource[] sfxSource = new AudioSource[3];
+    private const int SFX_SOURCE_POOL_SIZE = 3;
+    private AudioSource[] sfxSource = new AudioSource[SFX_SOURCE_POOL_SIZE];
     private AudioSource currentSfxSource;
 
     public AudioClip[] bgmClip;
@@ -63,6 +64,8 @@ public class SoundManager : MonoBehaviour
     private int sfxIndex = 0;
 
     public GameObject settingCanvas;
+    public GameObject canvas;
+    public GameObject optionCanvas;
 
     void Awake()
     {
@@ -83,30 +86,38 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    
-
-    void Start()
-    {
-        //FindSliderAndSource();
-        //RegisterAllButtons(); // 초기 씬 버튼 등록
-        //FindSettingCanvas();
-
-        
-    }
-
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         StartCoroutine(DelayRegisterButtons());
-        if (settingCanvas == null)
+        if (settingCanvas == null && GameManager.instance.currentState == GameState.Title)
         {
             settingCanvas = GameObject.FindWithTag("Setting");
+        }
+        if (optionCanvas == null && GameManager.instance.currentState == GameState.Map)
+        {
+            optionCanvas = GameObject.Find("Option_canvas");
         }
     }
 
     void FindSettingCanvas()
     {
-        settingCanvas = GameObject.FindWithTag("Setting");
-        settingCanvas?.SetActive(false);
+        if (settingCanvas == null && GameManager.instance.currentState == GameState.Title)
+        {
+            settingCanvas = GameObject.FindWithTag("Setting");
+        }
+        if (optionCanvas == null && GameManager.instance.currentState == GameState.Map)
+        {
+            canvas = GameObject.Find("Canvas_Overlay");
+            optionCanvas = canvas.transform.Find("Option_canvas").gameObject;
+        }
+        if (settingCanvas != null)
+        {
+            settingCanvas?.SetActive(false);
+        }
+        if (optionCanvas != null)
+        {
+            optionCanvas?.SetActive(false);
+        }
     }
 
     IEnumerator DelayRegisterButtons()
@@ -114,8 +125,8 @@ public class SoundManager : MonoBehaviour
         // UI 로딩이 끝날 때까지 한 프레임 대기
         yield return null;
         RegisterAllButtons();
-        FindSliderAndSource();
         FindSettingCanvas();
+        FindSliderAndSource();
 
         PlayBGM(e_BGMname.s_Title);
         FadeIn(1.5f, bgmSource);
@@ -130,9 +141,18 @@ public class SoundManager : MonoBehaviour
             sfxSource[i] = GameObject.Find(sfxSourceName[i])?.GetComponent<AudioSource>();
         }
 
-        mainVolumSlider = GameObject.Find(mainSliderName)?.GetComponent<Slider>();
-        bgmSlider = GameObject.Find(bgmSliderName)?.GetComponent<Slider>();
-        sfxSlider = GameObject.Find(sfxSliderName)?.GetComponent<Slider>();
+        if (GameManager.instance.currentState == GameState.Title)
+        {
+            mainVolumSlider = settingCanvas.transform.Find(mainSliderName)?.GetComponent<Slider>();
+            bgmSlider = settingCanvas.transform.Find(bgmSliderName)?.GetComponent<Slider>();
+            sfxSlider = settingCanvas.transform.Find(sfxSliderName)?.GetComponent<Slider>();
+        }
+        else if (GameManager.instance.currentState == GameState.Map)
+        {
+            mainVolumSlider = optionCanvas.transform.Find(mainSliderName)?.GetComponent<Slider>();
+            bgmSlider = optionCanvas.transform.Find(bgmSliderName)?.GetComponent<Slider>();
+            sfxSlider = optionCanvas.transform.Find(sfxSliderName)?.GetComponent<Slider>();
+        }
     }
 
     public void SetMasterVolume(float value)
@@ -208,17 +228,30 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySFX(e_SFXname clipName)
     {
-        currentSfxSource = sfxSource[(sfxIndex + 1) % 3];
+        currentSfxSource = sfxSource[(sfxIndex + 1) % SFX_SOURCE_POOL_SIZE];
         currentSfxSource.PlayOneShot(sfxClip[(int)clipName]);
         sfxIndex++;
     }
 
-    public void PlayBGM(e_BGMname clipName)
+    public void PlayBGM(e_BGMname clipName, bool fade = false)
     {
-        //bgmSource.Stop();
-        bgmSource.clip = bgmClip[(int)clipName];
-        bgmSource.loop = true;
-        bgmSource.Play();
+        if (fade)
+        {
+            StartCoroutine(FadeOutAndSwitchBGM(clipName));
+        }
+        else
+        {
+            bgmSource.clip = bgmClip[(int)clipName];
+            bgmSource.loop = true;
+            bgmSource.Play();
+        }
+    }
+
+    private IEnumerator FadeOutAndSwitchBGM(e_BGMname newClip)
+    {
+        yield return StartCoroutine(FadeOut(1f, bgmSource));
+        bgmSource.clip = bgmClip[(int)newClip];
+        yield return StartCoroutine(FadeIn(1f, bgmSource));
     }
 
     void RegisterAllButtons()
@@ -260,7 +293,7 @@ public class SoundManager : MonoBehaviour
 
     void OnAnyButtonClicked()
     {
-        if (!BaseUIManager.Instance.isPopupOpen)
+        if (!GameManager.instance.CurrentUIManager.isPopupOpen)
         {
             PlaySFX(e_SFXname.s_Button_Click);
         }

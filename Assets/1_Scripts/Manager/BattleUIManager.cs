@@ -17,9 +17,9 @@ public class BattleUIManager : BaseUIManager
     [SerializeField] Button[] gotoTitleButton;
 
     [Header("Monster HP")]
-    private RectTransform hpRectTransform;
-    private RectTransform hpDrainRectTransform;
-    private Monster monster;
+    [SerializeField] RectTransform hpRectTransform;
+    [SerializeField] RectTransform hpDrainRectTransform;
+    [SerializeField] Monster monster;
 
     [Header("Cost Display")]
     private TextMeshProUGUI currentCostText;
@@ -27,9 +27,9 @@ public class BattleUIManager : BaseUIManager
 
     private GameObject deckContent, graveContent;
     private ScrollRect deckScrollRect, graveScrollRect;
-    private StatusInfoUI statusInfoUI;
-    private DamageInfoUI damageInfoUI;
-    private GameObject placeUI, battleUIContainer;
+    [SerializeField] StatusInfoUI statusInfoUI;
+    [SerializeField] DamageInfoUI damageInfoUI;
+    [SerializeField] GameObject placeUI, battleUI;
 
     // HP 애니메이션 관련
     private const float MONSTER_HP_UI_RATIO = 989f;
@@ -41,11 +41,6 @@ public class BattleUIManager : BaseUIManager
 
     [SerializeField] Transform graveHoverLayer;
     public override Transform GraveHoverLayer => graveHoverLayer;
-
-    private void Awake()
-    {
-        BaseUIManager.Instance = this;
-    }
 
     public override void Initialize()
     {
@@ -80,10 +75,13 @@ public class BattleUIManager : BaseUIManager
 
     private void InitializeBattleUI()
     {
-        placeUI = GameObject.FindWithTag("PlaceUI");
-        battleUIContainer = GameObject.FindWithTag("BattleUI");
+        var canvas = GameObject.Find("Canvas_Overlay");
 
-        var canvas = GameObject.Find("Canvas");
+        placeUI = canvas.transform.Find("PlaceUI").gameObject;
+        battleUI = canvas.transform.Find("BattleUI").gameObject;
+        statusInfoUI = battleUI.transform.Find("StatusUI").Find("StatusInfoUI").GetComponent<StatusInfoUI>();
+        damageInfoUI = battleUI.transform.Find("DamageUI").Find("DamageInfoUI").GetComponent<DamageInfoUI>();
+
         deckUI = canvas.transform.Find("DeckUI").gameObject;
         graveUI = canvas.transform.Find("GraveUI").gameObject;
 
@@ -130,6 +128,7 @@ public class BattleUIManager : BaseUIManager
             currentCostText.text = PlayerManager.instance.cost.ToString();
             maxCostText.text = PlayerManager.instance.maxCost.ToString();
         }
+        DamageMonster();
         UpdateCostDisplay();
         UpdateHPAnimation();
     }
@@ -153,12 +152,6 @@ public class BattleUIManager : BaseUIManager
                 sizeDelta.x -= Time.deltaTime * speed;
             hpDrainRectTransform.sizeDelta = sizeDelta;
         }
-
-        if (isBossDamaged)
-        {
-            SetWidth(hpDrainRectTransform, prevWidth);
-            isBossDamaged = false;
-        }
     }
 
     public override void DamageMonster()
@@ -171,7 +164,6 @@ public class BattleUIManager : BaseUIManager
         isBossDamaged = true;
 
         SetWidth(hpRectTransform, currentWidth);
-
         var hpText = hpRectTransform.parent.GetChild(4).GetComponent<TMP_Text>();
         hpText.text = $"{Mathf.Max(0, monster.GetHp())}/{monster.GetMaxHp()}";
     }
@@ -195,22 +187,29 @@ public class BattleUIManager : BaseUIManager
 
     public void ShowBattleUI()
     {
-        for (int i = 0; i < battleUIContainer.transform.childCount; i++)
-            battleUIContainer.transform.GetChild(i).gameObject.SetActive(true);
+        for (int i = 0; i < battleUI.transform.childCount; i++)
+            battleUI.transform.GetChild(i).gameObject.SetActive(true);
     }
 
     public override void UpdateBattleUIs()
     {
-        statusInfoUI ??= GameObject.FindWithTag("StatusInfoUI").GetComponent<StatusInfoUI>();
         statusInfoUI?.UpdateStatusInfo();
-
-        damageInfoUI ??= GameObject.FindWithTag("DamageInfoUI").GetComponent<DamageInfoUI>();
         damageInfoUI?.UpdateDamageInfo();
+    }
+
+    private void ClearDeckContent()
+    {
+        foreach (Transform child in deckContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     private void LoadDeck()
     {
-        foreach (GameObject card in BattleCardManager.BattleCardManagerInstance.GetDeckObject())
+        ClearDeckContent();
+
+        foreach (GameObject card in BattleCardManager.instance.GetDeckObject())
         {
             GameObject currentCard = Instantiate(card);
             currentCard.GetComponent<Card>().cardZone = CardZone.Deck;
@@ -223,7 +222,7 @@ public class BattleUIManager : BaseUIManager
     {
         // 덱 업데이트
         ClearChildren(deckContent);
-        foreach (GameObject card in BattleCardManager.BattleCardManagerInstance.GetDeckObject())
+        foreach (GameObject card in BattleCardManager.instance.GetDeckObject())
         {
             GameObject currentCard = Instantiate(card);
             currentCard.GetComponent<Card>().cardZone = CardZone.Deck;
@@ -234,7 +233,7 @@ public class BattleUIManager : BaseUIManager
 
         // 무덤 업데이트
         ClearChildren(graveContent);
-        foreach (GameObject card in BattleCardManager.BattleCardManagerInstance.GetGraveObject())
+        foreach (GameObject card in BattleCardManager.instance.GetGraveObject())
         {
             GameObject currentCard = Instantiate(card);
             currentCard.GetComponent<Card>().cardZone = CardZone.Grave;
@@ -271,19 +270,19 @@ public class BattleUIManager : BaseUIManager
 
     public override void OpenBattleUIs()
     {
-        for (int i = 0; i < battleUIContainer.transform.childCount; i++)
+        for (int i = 0; i < battleUI.transform.childCount; i++)
         {
-            if (battleUIContainer.transform.GetChild(i).gameObject.GetComponent<ImageClickHandler>() != null)
-                battleUIContainer.transform.GetChild(i).gameObject.GetComponent<ImageClickHandler>().Open();
+            if (battleUI.transform.GetChild(i).gameObject.GetComponent<ImageClickHandler>() != null)
+                battleUI.transform.GetChild(i).gameObject.GetComponent<ImageClickHandler>().Open();
         }
 
     }
 
     public void CloseBattleUIs()
     {
-        for (int i = 0; i < battleUIContainer.transform.childCount; i++)
+        for (int i = 0; i < battleUI.transform.childCount; i++)
         {
-            battleUIContainer.transform.GetChild(i).gameObject.GetComponent<ImageClickHandler>().Close();
+            battleUI.transform.GetChild(i).gameObject.GetComponent<ImageClickHandler>().Close();
         }
 
     }

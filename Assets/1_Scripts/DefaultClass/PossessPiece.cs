@@ -20,6 +20,7 @@ public class PossessPiece : MonoBehaviour
             grid = transform.Find("Grid");
         }
         LoadNumberSprites();
+        UpdatePossessUI();
     }
 
     void LoadNumberSprites()
@@ -38,16 +39,16 @@ public class PossessPiece : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        AddPieceUI(PlayerManager.instance.pawnCount, ePieceType.Pawn);
-        AddPieceUI(PlayerManager.instance.upgradedPawnCount, ePieceType.UpgradePawn);
-        AddPieceUI(PlayerManager.instance.knightCount, ePieceType.Knight);
-        AddPieceUI(PlayerManager.instance.upgradedKnightCount, ePieceType.UpgradeKnight);
-        AddPieceUI(PlayerManager.instance.rookCount, ePieceType.Rook);
-        AddPieceUI(PlayerManager.instance.upgradedRookCount, ePieceType.UpgradeRook);
-        AddPieceUI(PlayerManager.instance.bishopCount, ePieceType.Bishop);
-        AddPieceUI(PlayerManager.instance.upgradedBishopCount, ePieceType.UpgradeBishop);
-        AddPieceUI(PlayerManager.instance.queenCount, ePieceType.Queen);
-        AddPieceUI(PlayerManager.instance.upgradedQueenCount, ePieceType.UpgradeQueen);
+        AddPieceUI(PlayerManager.instance.pieceCounts[PieceVariant.Pawn], ePieceType.Pawn);
+        AddPieceUI(PlayerManager.instance.upgradedPieceCounts[PieceVariant.Pawn], ePieceType.UpgradePawn);
+        AddPieceUI(PlayerManager.instance.pieceCounts[PieceVariant.Knight], ePieceType.Knight);
+        AddPieceUI(PlayerManager.instance.upgradedPieceCounts[PieceVariant.Knight], ePieceType.UpgradeKnight);
+        AddPieceUI(PlayerManager.instance.pieceCounts[PieceVariant.Rook], ePieceType.Rook);
+        AddPieceUI(PlayerManager.instance.upgradedPieceCounts[PieceVariant.Rook], ePieceType.UpgradeRook);
+        AddPieceUI(PlayerManager.instance.pieceCounts[PieceVariant.Bishop], ePieceType.Bishop);
+        AddPieceUI(PlayerManager.instance.upgradedPieceCounts[PieceVariant.Bishop], ePieceType.UpgradeBishop);
+        AddPieceUI(PlayerManager.instance.pieceCounts[PieceVariant.Queen], ePieceType.Queen);
+        AddPieceUI(PlayerManager.instance.upgradedPieceCounts[PieceVariant.Queen], ePieceType.UpgradeQueen);
     }
 
     static void AddPieceUI(int count, ePieceType type)

@@ -75,7 +75,7 @@ public class Node : MonoBehaviour
             return; //  UI 위에 커서가 있으면 무시
 
         if (GameManager.instance.currentState == GameState.Map)
-            BaseUIManager.Instance.ShowStageInfo(stageNodeType);
+            GameManager.instance.CurrentUIManager.ShowStageInfo(stageNodeType);
     }
 
     public void SetTileVisible(bool visible)

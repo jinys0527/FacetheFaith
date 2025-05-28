@@ -6,21 +6,21 @@ public class CardQueueManager : MonoBehaviour
 {
     public static CardQueueManager instance;
 
+    Queue<GameObject> cardQueue = new();
+    bool isProcessing = false;
+
     private void Awake()
     {
         if(instance == null)
         {
             instance = this;
-            cardQueue = new Queue<GameObject>();
+            
         }
         else
         {
             Destroy(gameObject);
         }
     }
-
-    Queue<GameObject> cardQueue;
-    bool isProcessing = false;
 
     public void EnqueueCard(GameObject card)
     {
@@ -39,7 +39,7 @@ public class CardQueueManager : MonoBehaviour
         {
             GameObject currentCard = cardQueue.Dequeue();
 
-            yield return StartCoroutine(BattleCardManager.BattleCardManagerInstance.Co_ApplyCard(currentCard));
+            yield return StartCoroutine(BattleCardManager.instance.Co_ApplyCard(currentCard));
         }
 
         isProcessing = false;

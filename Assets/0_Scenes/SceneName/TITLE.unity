@@ -738,8 +738,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 294088240}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 45.48382}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -747,11 +747,11 @@ RectTransform:
   - {fileID: 1493720554}
   - {fileID: 364364725}
   - {fileID: 822172496}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1243864144}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -80.685486, y: 30.779116}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &294809213
@@ -920,16 +920,6 @@ MonoBehaviour:
   cost: 5
   maxCost: 5
   carryOverCost: 0
-  pawnCount: 0
-  knightCount: 0
-  bishopCount: 0
-  rookCount: 0
-  queenCount: 0
-  upgradedPawnCount: 0
-  upgradedKnightCount: 0
-  upgradedBishopCount: 0
-  upgradedRookCount: 0
-  upgradedQueenCount: 0
 --- !u!4 &323687469
 Transform:
   m_ObjectHideFlags: 0
@@ -3671,9 +3661,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardTable: {fileID: 11400000, guid: 36a448044edc70a458ba3c30eb6bb659, type: 2}
   initDeckIndices: 00000000010000000200000003000000040000000500000006000000070000000800000009000000
-  m_deckCount: 0
-  m_handCount: 0
-  m_graveCount: 0
   radius: 4000
   maxAngle: 15
   minAngle: 0.5
@@ -3757,8 +3744,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1162650199}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 45.48382}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3770,11 +3757,11 @@ RectTransform:
   - {fileID: 334113584}
   - {fileID: 1527861572}
   - {fileID: 294809214}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1243864144}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -80.685486, y: 30.779116}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1162650201
@@ -3914,10 +3901,6 @@ MonoBehaviour:
   bgmSliderName: BGM_Slider
   sfxSliderName: SFX_Slider
   bgmSource: {fileID: 1439007570}
-  sfxSource:
-  - {fileID: 1843277829}
-  - {fileID: 999616560}
-  - {fileID: 1836137444}
   bgmClip:
   - {fileID: 8300000, guid: 854d32bf91a9e614481be42faf0368e5, type: 3}
   - {fileID: 8300000, guid: bab26527ebc5c604fa68c84d7e5f56fa, type: 3}
@@ -3950,6 +3933,8 @@ MonoBehaviour:
   bgmSlider: {fileID: 1062315373}
   sfxSlider: {fileID: 618726400}
   settingCanvas: {fileID: 1219790949}
+  canvas: {fileID: 0}
+  optionCanvas: {fileID: 0}
 --- !u!4 &1187845639
 Transform:
   m_ObjectHideFlags: 0
@@ -4086,7 +4071,7 @@ RectTransform:
   - {fileID: 1062315372}
   - {fileID: 618726399}
   - {fileID: 1301118049}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1243864144}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4156,6 +4141,40 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 2
   m_TargetDisplay: 0
+--- !u!1 &1243864143
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1243864144}
+  m_Layer: 0
+  m_Name: Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1243864144
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1243864143}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 80.685486, y: -30.779116, z: -45.48382}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1219790950}
+  - {fileID: 1162650200}
+  - {fileID: 294088244}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1301118048
 GameObject:
   m_ObjectHideFlags: 0
@@ -6107,9 +6126,7 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1646917911}
   - {fileID: 858878027}
-  - {fileID: 1219790950}
-  - {fileID: 1162650200}
-  - {fileID: 294088244}
+  - {fileID: 1243864144}
   - {fileID: 4357564364415093545}
   - {fileID: 354696925}
   - {fileID: 1024646288}

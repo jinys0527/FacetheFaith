@@ -10,27 +10,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-//카드 정보 불러오는 애 m_cardLoader
-
-public class CardEffectProcessor
-{
-
-}
-
-public class CardAnimationController
-{
-
-}
-
-public class CardUIManager
-{
-
-}
-
-public class DeckManager
-{ 
-}
-
 public class BattleCardManager : CardManager
 {
     #region
@@ -45,7 +24,7 @@ public class BattleCardManager : CardManager
     public float lerpSpeed = 0;           // 부드러운 이동 속도
 
 
-    public static BattleCardManager BattleCardManagerInstance;
+    public static BattleCardManager instance;
     public GameObject cardPrefab;
     public GameObject cardCanvas;
 
@@ -91,6 +70,9 @@ public class BattleCardManager : CardManager
     private int discardAfterDrawCount = 0;
     public int costReduction = 0;
 
+    int deckCount = 0;
+    int graveCount = 0;
+
     Vector2 animStartPos;
 
     private List<GameObject> m_deckObjects = new List<GameObject>();
@@ -129,13 +111,13 @@ public class BattleCardManager : CardManager
     {
         Debug.Log("Awake");
         #region singleton
-        if (BattleCardManagerInstance == null)
+        if (instance == null)
         {
-            BattleCardManagerInstance = this;
+            instance = this;
             SceneManager.sceneLoaded += OnSceneLoaded;
             DontDestroyOnLoad(gameObject);
         }
-        else if (BattleCardManagerInstance != this)
+        else if (instance != this)
         {
             Debug.Log("나 사라짐");
             Destroy(gameObject);
@@ -149,9 +131,6 @@ public class BattleCardManager : CardManager
         handCenter = new Vector3(0, -4640f, 0);
         idealCardCount = 5;
         //M_InitDeck(10); //OnEnable 혹은 Awake 에서 덱 초기화
-
-        m_handData.Clear();
-
     }
 
     private void Start()
@@ -263,7 +242,6 @@ public class BattleCardManager : CardManager
 
             card.SetData(data);
 
-            m_deckCount++;
             m_deckObjects.Add(gameObject);
             gameObject.SetActive(false);
         }
@@ -307,7 +285,7 @@ public class BattleCardManager : CardManager
 
     public void ViewMaximum(List<GameObject> cards) // 여기 팝업 떠있을 때 레이 방지함 (GameOver,Clear팝업)
     {
-        if (!BaseUIManager.Instance.isPopupOpen)
+        if (!GameManager.instance.CurrentUIManager.isPopupOpen)
         {
             // 1.포인터 이벤트 설정
             pointerData = new PointerEventData(EventSystem.current);
@@ -447,7 +425,7 @@ public class BattleCardManager : CardManager
         yield return StartCoroutine(DiscardAnim(card));
         card.SetActive(false);
         yield return null;
-        BaseUIManager.Instance.UpdateCards();
+        GameManager.instance.CurrentUIManager.UpdateCards();
     }
 
     public void StartDiscardWaitAnim(GameObject card)
@@ -460,7 +438,7 @@ public class BattleCardManager : CardManager
         yield return StartCoroutine(HandUseAnim(card));
         card.SetActive(false);
         yield return null;
-        BaseUIManager.Instance.UpdateCards();
+        GameManager.instance.CurrentUIManager.UpdateCards();
     }
 
     public void StartHandUseWaitAnim(GameObject card)
@@ -473,8 +451,6 @@ public class BattleCardManager : CardManager
     {
         if (GameManager.instance.currentState != GameState.Stage_Battle)
             return;
-
-        base.DrawData(num);
 
         if (m_deckObjects.Count == 0 && m_graveObjects.Count > 0)
         {
@@ -501,8 +477,6 @@ public class BattleCardManager : CardManager
 
             m_handObjects.Add(cardObject);
 
-            m_deckCount--;
-            m_handCount++;
             num--;
         }
     }
@@ -528,7 +502,7 @@ public class BattleCardManager : CardManager
             isShuffled = false;
         }
         drawCoroutine = null;
-        BaseUIManager.Instance.UpdateCards();
+        GameManager.instance.CurrentUIManager.UpdateCards();
     }
 
     public void ScaleToOrigin()
@@ -557,8 +531,6 @@ public class BattleCardManager : CardManager
 
     public void Shuffle()
     {
-        ShuffleData();
-
         for (int i = 0; i < m_graveObjects.Count; i++)
         {
             GameObject card = m_graveObjects[i];
@@ -570,9 +542,6 @@ public class BattleCardManager : CardManager
             card.SetActive(true);
             card.transform.localScale = Vector3.one;
         }
-
-        m_deckCount += m_graveCount;
-        m_graveCount = 0;
 
         m_graveObjects.Clear();
 
@@ -590,8 +559,6 @@ public class BattleCardManager : CardManager
     {
         foreach (GameObject card in m_handObjects)
         {
-            m_handCount--;
-            m_graveCount++;
             m_graveObjects.Add(card);
             StartDiscardWaitAnim(card);
         }
@@ -671,16 +638,14 @@ public class BattleCardManager : CardManager
         {
             StartHandUseWaitAnim(card);
             m_handObjects.Remove(card);
+            
             m_graveObjects.Add(card);
-            m_graveCount++;
-            m_handCount--;
         }
 
         if (isExcluded)
         {
             m_handObjects.Remove(card);
             m_excludeObjects.Add(card);
-            m_handCount--;
             m_excludeCount++;
             isExcluded = false;
         }
@@ -695,7 +660,7 @@ public class BattleCardManager : CardManager
                 ApplyEffect(piece, card);
 
                 yield return null;
-                BaseUIManager.Instance.UpdateBattleUIs();
+                GameManager.instance.CurrentUIManager.UpdateBattleUIs();
             }
         }
     }
@@ -781,7 +746,7 @@ public class BattleCardManager : CardManager
         if (effect.Contains("이월"))
         {
             PlayerManager.instance.carryOverCost = PlayerManager.instance.cost;
-            BattleManager.BattleManagerInstance.SetState(eBattleState.MonsterAttack);
+            BattleManager.instance.SetState(eBattleState.MonsterAttack);
         }
     }
 
@@ -854,18 +819,17 @@ public class BattleCardManager : CardManager
         TextMeshProUGUI deckText = Deck.GetComponentInChildren<TextMeshProUGUI>();
         if (deckText != null)
         {
-            deckText.text = m_deckCount.ToString();
+            deckCount = m_deckObjects.Count;
+            deckText.text = deckCount.ToString();
         }
 
         TextMeshProUGUI graveText = Grave.GetComponentInChildren<TextMeshProUGUI>();
         if (graveText != null)
         {
-            graveText.text = m_graveCount.ToString();
+            graveCount = m_graveObjects.Count;
+            graveText.text = graveCount.ToString();
         }
     }
-
-
-    
 
     public void FinishBattle()
     {
@@ -890,13 +854,6 @@ public class BattleCardManager : CardManager
             m_deckObjects.Add(currentCard);
             m_excludeObjects.RemoveAt(0);
         }
-
-        m_deckCount = m_deckObjects.Count;
-        m_handCount = 0;
-        m_graveCount = 0;
-
-        m_handData.Clear();
-        m_graveData.Clear();
     }
 
     public void OnBeginDragEvent(GameObject card)
@@ -904,7 +861,7 @@ public class BattleCardManager : CardManager
         if (!(card.transform.parent.gameObject.name == "DeckContent") && !(card.transform.parent.gameObject.name == "GraveContent"))
         {
             isDrag = true;
-            isPlayerTurn = BattleManager.BattleManagerInstance.GetIsPlayerTurn();
+            isPlayerTurn = BattleManager.instance.GetIsPlayerTurn();
             card.GetComponent<CanvasGroup>().blocksRaycasts = false; // 드래그 중엔 다른 UI가 Raycast를 받을 수 있도록 비활성화
         }
     }
@@ -935,7 +892,7 @@ public class BattleCardManager : CardManager
             card.GetComponent<CanvasGroup>().blocksRaycasts = true;
             RectTransform rectTransform = ActiveHandRect.GetComponent<RectTransform>();
             Vector2 mousePos = Input.mousePosition;
-            if (RectTransformUtility.RectangleContainsScreenPoint(rectTransform, mousePos) && BattleManager.BattleManagerInstance.GetIsPlayerTurn())
+            if (RectTransformUtility.RectangleContainsScreenPoint(rectTransform, mousePos) && BattleManager.instance.GetIsPlayerTurn())
             {
                 Vector2 localStartPos;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -949,66 +906,4 @@ public class BattleCardManager : CardManager
             }
         }
     }
-
-    
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if (GameManager.instance.currentState != GameState.Stage_Battle)
-        {
-            clickedObject = eventData.pointerCurrentRaycast.gameObject;
-
-            if (clickedObject.GetComponent<Card>() != null)
-            {
-                if (transform.GetChild(1).childCount != 0)
-                {
-                    hoverImage = transform.GetChild(1).GetChild(0).gameObject;
-                    hoverImage.GetComponent<Image>().color = new Color(0.7f, 0.7f, 0.7f, 1);
-                }
-            }
-        }
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (GameManager.instance.currentState != GameState.Stage_Battle)
-        {
-            Debug.Log("클릭됨");
-            if (clickedObject != null)
-            {
-                if (clickedObject.GetComponent<Card>() != null)
-                {
-                    count++;
-                    BattleCardManager.BattleCardManagerInstance.initDeckIndices.Remove(clickedObject.GetComponent<Card>().cardData.index);
-
-                    Destroy(clickedObject);
-                    if (transform.GetChild(1).childCount != 0)
-                    {
-                        hoverImage = transform.GetChild(1).GetChild(0).gameObject;
-                    }
-                    Destroy(hoverImage);
-
-                    if (count > 2)
-                    {
-                        SceneChageManager.Instance.ChangeGameState(GameState.Map);
-                    }
-                }
-            }
-        }
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (GameManager.instance.currentState != GameState.Stage_Battle)
-        {
-            Debug.Log(transform.GetChild(1).name);
-            if (transform.GetChild(1).childCount != 0)
-            {
-                Debug.Log(transform.GetChild(1).GetChild(0).name);
-                hoverImage = transform.GetChild(1).GetChild(0).gameObject;
-                hoverImage.GetComponent<Image>().color = new Color(1, 1, 1, 1);
-            }
-        }
-    }
-
 }

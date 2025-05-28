@@ -75,10 +75,15 @@ public class InventoryPiece : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
     public void CountingPiece()
     {
-        numberImage.sprite = sprites[BattlePieceManager.instance.GetCount(pieceVariant, upgrade)];
-        if (BattlePieceManager.instance.GetCount(pieceVariant, upgrade) == 0)
+        int index = BattlePieceManager.instance.GetCount(pieceVariant, upgrade);
+        numberImage.sprite = sprites[index];
+        if (index == 0)
+        {
             myImage.color = new Color(0f, 0f, 0f, 0.5f);
+        }   
         else
+        {
             myImage.color = new Color(1, 1, 1, 1);
+        }
     }
 }

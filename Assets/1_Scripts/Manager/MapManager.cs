@@ -1,6 +1,4 @@
-
 using System.Collections.Generic;
-using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,9 +6,15 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.XR;
 
+public interface IBoard
+{
+    int Width { get; }
+    int Height { get; }
+    bool IsBlocked(Vector2Int pos);
+    Node GetNode(Vector2Int pos);
+}
 
-
-public class MapManager : MonoBehaviour
+public class MapManager : MonoBehaviour, IBoard
 {
     public static MapManager instance;
     public static TestSpawner testSpawner;
@@ -42,7 +46,7 @@ public class MapManager : MonoBehaviour
     public int pathCount = 6;         // 경로 수
     public bool ismap = true; // true면 지도 상태
     private HashSet<Node> revealedPathNodes = new(); // 이미 밝혀진 경로 저장 = 현재 노드에서 다음 노드 선택 시 지나온 Road 저장
-    
+
     public int y_terms = 4; // y축으로 몇칸마다 스테이지 타입 부여할지 결정하는 변수
     public int x_terms = 4; // x축으로 몇칸마다 스테이지 타입 부여할지 결정하는 변수
 
@@ -132,7 +136,7 @@ public class MapManager : MonoBehaviour
     {
         return currentStageNum; // 현재 스테이지 번호 가져오기
     }
-    
+
     void GenerateBoard()
     {
         grid = new Node[Width, Height];
@@ -145,7 +149,7 @@ public class MapManager : MonoBehaviour
                 var world = new Vector3((x - offsetX) * nodeSize, 0, y - 5);
                 Node node = Instantiate(nodePrefab, world, Quaternion.identity, transform)
                                 .GetComponent<Node>();
-                node.transform.localScale = new Vector3(nodeSize, 0, 1* nodeSize);
+                node.transform.localScale = new Vector3(nodeSize, 0, 1 * nodeSize);
                 //node.GetComponent<MeshRenderer>().materials = null;
 
                 bool isWhite = (x + y) % 2 == 1;
@@ -228,7 +232,7 @@ public class MapManager : MonoBehaviour
                 Vector3 spawnPos = node.transform.position + new Vector3(0, 0, 0);
                 //Vector3 spawnPos = node.transform.position + new Vector3(0, 0, -10);
 
-                piecePrefab = Instantiate(KingPrefab, spawnPos, Quaternion.Euler(60,0,0));
+                piecePrefab = Instantiate(KingPrefab, spawnPos, Quaternion.Euler(60, 0, 0));
                 Debug.Log("킹 생성됨");
                 //node.setMaterial(icon[0]); // 킹 노드 머테리얼 설정
                 node.transform.Find("Icon").GetComponent<MeshRenderer>().material = icon[0]; // 킹 노드 머테리얼 설정

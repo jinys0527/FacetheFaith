@@ -17,16 +17,7 @@ public class EffectManager : MonoBehaviour
     [SerializeField] private GameObject enforceEffectPrefab;
 
 
-    //[SerializeField] private Sprite glowSprite;
-    //[SerializeField] private Sprite attackSprite;
-    //[SerializeField] private Sprite freezeSprite;
-    //[SerializeField] private Sprite weakeneSprite;
-    //[SerializeField] private Sprite distortSprite;
-    //[SerializeField] private Sprite shockSprite;
-    //[SerializeField] private Sprite explodeSprite;
-    //[SerializeField] private Sprite knockbackSprite;
-    //[SerializeField] private Sprite enforceSprite;
-
+    private Dictionary<eMonsterAttackType, GameObject> bossEffectPrefabs;
 
     private List<GameObject> activeEffects = new();
     private List<GameObject> bossEffects = new();
@@ -44,58 +35,46 @@ public class EffectManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        bossEffectPrefabs = new()
+        {
+            { eMonsterAttackType.Default, attackEffectPrefab },
+            { eMonsterAttackType.Freeze, freezeEffectPrefab },
+            { eMonsterAttackType.Weak, weakenEffectPrefab },
+            { eMonsterAttackType.Distort, distortEffectPrefab },
+            { eMonsterAttackType.Shock, shockEffectPrefab },
+            { eMonsterAttackType.Explode, explodeEffectPrefab },
+            { eMonsterAttackType.Knockback, knockbackEffectPrefab },
+            { eMonsterAttackType.Enforce, enforceEffectPrefab }
+        };
+    }
+
+    private void ShowEffects(List<Node> nodes, GameObject prefab, List<GameObject> targetList)
+    {
+        foreach (var node in nodes)
+        {
+            GameObject effect = Instantiate(prefab);
+            effect.transform.position = node.transform.position + new Vector3(0, 0.253f, 0);  // 살짝 띄움
+            targetList.Add(effect);
+        }
+    }
+
 
     public void ShowPlaceEffects(List<Node> nodes) // 노드 리스트 넘기면 해당 노드들에 이펙트 출력 함
     {
-        //ClearEffects();  // 기존 이펙트 제거
-
-        foreach (var node in nodes)
-        {
-            GameObject effect = Instantiate(glowEffectPrefab);
-            effect.transform.position = node.transform.position + new Vector3(0, 0.253f, 0);  // 살짝 띄움
-            activeEffects.Add(effect);
-        }
+        ShowEffects(nodes, glowEffectPrefab, activeEffects);
     }
 
     public void ShowBossEffects(List<Node> nodes) // 노드 리스트 넘기면 해당 노드들에 이펙트 출력 함
     {
-        //ClearEffects();  // 기존 이펙트 제거
-
         foreach (var node in nodes)
         {
-            GameObject effect = null;
-            switch (node.monsterAttackType)
-            {
-                case eMonsterAttackType.Default:
-                    effect = Instantiate(attackEffectPrefab);
-                    break;
-                case eMonsterAttackType.Freeze:
-                    effect = Instantiate(freezeEffectPrefab);
-                    break;
-                case eMonsterAttackType.Weak:
-                    effect = Instantiate(weakenEffectPrefab);
-                    break;
-                case eMonsterAttackType.Distort:
-                    effect = Instantiate(distortEffectPrefab);
-                    break;
-                case eMonsterAttackType.Shock:
-                    effect = Instantiate(shockEffectPrefab);
-                    break;
-                case eMonsterAttackType.Explode:
-                    effect = Instantiate(explodeEffectPrefab);
-                    break;
-                case eMonsterAttackType.Knockback:
-                    effect = Instantiate(knockbackEffectPrefab);
-                    break;
-                case eMonsterAttackType.Enforce:
-                    effect = Instantiate(enforceEffectPrefab);
-                    break;
-                default:
-                    break;
-            }
-            if (effect == null)
+            if (!bossEffectPrefabs.TryGetValue(node.monsterAttackType, out GameObject prefab))
                 continue;
-            effect.transform.position = node.transform.position + new Vector3(0, 0.251f, 0);  // 살짝 띄움
+
+            GameObject effect = Instantiate(prefab);
+            effect.transform.position = node.transform.position + new Vector3(0, 0.251f, 0);
             bossEffects.Add(effect);
         }
     }

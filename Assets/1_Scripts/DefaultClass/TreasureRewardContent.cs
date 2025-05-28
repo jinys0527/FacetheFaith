@@ -32,23 +32,23 @@ public class TreasureRewardContent : MonoBehaviour, IPointerDownHandler, IPointe
             case "Index1":
                 PlayerManager.instance.AddPiece(rewardContents[0].pieceVariant, 1);
                 PlayerManager.instance.AddPiece(rewardContents[0].secondPieceVariant, 1);
-                BattleCardManager.BattleCardManagerInstance.initDeckIndices.Add(rewardContents[0].cardindex);
+                BattleCardManager.instance.initDeckIndices.Add(rewardContents[0].cardindex);
                 break;
             case "Index2":
                 PlayerManager.instance.AddPiece(rewardContents[1].pieceVariant, 1);
                 PlayerManager.instance.AddPiece(rewardContents[1].secondPieceVariant, 1);
-                BattleCardManager.BattleCardManagerInstance.initDeckIndices.Add(rewardContents[1].cardindex);
+                BattleCardManager.instance.initDeckIndices.Add(rewardContents[1].cardindex);
                 break;
             case "Index3":
                 PlayerManager.instance.AddPiece(rewardContents[2].pieceVariant, 1);
                 PlayerManager.instance.AddPiece(rewardContents[2].secondPieceVariant, 1);
-                BattleCardManager.BattleCardManagerInstance.initDeckIndices.Add(rewardContents[2].cardindex);
+                BattleCardManager.instance.initDeckIndices.Add(rewardContents[2].cardindex);
                 break;
         }
 
         rewardContents.Clear();
 
-        SceneChageManager.Instance.ChangeGameState(GameState.Map);
+        SceneChangeManager.Instance.ChangeGameState(GameState.Map);
     }
 
     public void OnPointerUp(PointerEventData eventData)

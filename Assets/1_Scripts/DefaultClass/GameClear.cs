@@ -16,7 +16,7 @@ public class GameClear : MonoBehaviour
     public void FadeInGameClear()
     {
         StartCoroutine(FadeInClearCoroutine());
-        BaseUIManager.Instance.isPopupOpen = true;
+        GameManager.instance.CurrentUIManager.isPopupOpen = true;
     }
 
     IEnumerator FadeInClearCoroutine()

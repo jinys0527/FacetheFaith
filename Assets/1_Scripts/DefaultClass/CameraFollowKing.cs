@@ -14,7 +14,6 @@ public class CameraFollowKing : MonoBehaviour
         Vector3 desiredPosition;
         desiredPosition.z = target.position.z + offset.z;
         desiredPosition.y = target.position.y + offset.y;
-        //transform.position = Vector3.Lerp(transform.position, desiredPosition, followSpeed * Time.deltaTime);
 
         transform.position = new Vector3(transform.position.x , desiredPosition.y, desiredPosition.z);
     }

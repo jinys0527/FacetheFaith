@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class StatusInfoUI : MonoBehaviour
 {
     public GameObject prefab;
-    public GameObject[] pieces;
+    public List<GameObject> pieces = new List<GameObject>();
     public GridLayoutGroup grid;
     public int columns = 2;
 
@@ -26,13 +26,13 @@ public class StatusInfoUI : MonoBehaviour
             Piece piece = BattlePieceManager.instance.pieces[i].GetComponent<Piece>();
             if (!piece.GetIsAlive()) continue;
 
-            pieces[i] = Instantiate(prefab, grid.transform);
+            pieces.Add(Instantiate(prefab, grid.transform));
             pieces[i].transform.SetParent(grid.transform);
             pieces[i].transform.SetSiblingIndex((int)piece.pieceVariant + (piece.level ? 1 : 0));
             UnityEngine.UI.Image image = pieces[i].GetComponent<UnityEngine.UI.Image>();
             pieces[i].GetComponent<StatusPiece>().piece = piece;
+            print(pieces[i]);
             image.sprite = piece.level ? piece.data.upgradePieceSprite : piece.data.pieceSprite;
-            pieces[i].GetComponentInChildren<TMP_Text>().text = piece.currentDamage.ToString();
         }
 
         CenterLastRow();

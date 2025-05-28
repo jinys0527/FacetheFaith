@@ -63,7 +63,7 @@ public class SynopsisFadeOut : MonoBehaviour
             else
             {
                 yield return new WaitForSeconds(0.1f); // 마지막 컷 유지 시간
-                SceneChageManager.Instance.ChangeGameState(GameState.Map);
+                SceneChangeManager.Instance.ChangeGameState(GameState.Map);
             }
         }
     }

@@ -145,6 +145,7 @@ GameObject:
   - component: {fileID: 3053318080063961210}
   - component: {fileID: 2532553783253228118}
   - component: {fileID: 2840917729666790816}
+  - component: {fileID: 795371767465754252}
   m_Layer: 5
   m_Name: DamagePiece
   m_TagString: Untagged
@@ -211,6 +212,33 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &795371767465754252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6738586254412582965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1bb2cdf043b75646a806f82e70da9bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: {fileID: 0}
+  pieceVariant: 0
+  x: 0
+  y: 0
+  node: {fileID: 0}
+  statusEffectType: 0
+  attackEffect: []
+  level: 0
+  hp: 0
+  atk: 0
+  canMove: 1
+  attackCount: 1
+  currentDamage: 0
+  isDamageImmune: 0
+  isStatusImmune: 0
 --- !u!1 &7371777848514303988
 GameObject:
   m_ObjectHideFlags: 0
