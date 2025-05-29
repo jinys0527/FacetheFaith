@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -13,7 +14,7 @@ public class UpgradePieceUI : MonoBehaviour
 
     static int columns = 3;
 
-    void OnEnable()
+    void Start()
     {
         if (prefab == null)
         {
@@ -25,6 +26,7 @@ public class UpgradePieceUI : MonoBehaviour
         }
         LoadNumberSprites();
         UpdateUpgradeUI();
+        StartCoroutine(DelayedCenter());
     }
 
     void LoadNumberSprites()
@@ -47,8 +49,6 @@ public class UpgradePieceUI : MonoBehaviour
         AddPieceUI(PlayerManager.instance.pieceCounts[PieceVariant.Rook], ePieceType.Rook);
         AddPieceUI(PlayerManager.instance.pieceCounts[PieceVariant.Bishop], ePieceType.Bishop);
         AddPieceUI(PlayerManager.instance.pieceCounts[PieceVariant.Queen], ePieceType.Queen);
-
-        CenterLastRow();
     }
 
     static void AddPieceUI(int count, ePieceType type)
@@ -68,6 +68,13 @@ public class UpgradePieceUI : MonoBehaviour
     static Sprite GetPieceSprite(ePieceType type)
     {
         return Resources.Load<Sprite>("Image/Chess/Piece/" + type.ToString());
+    }
+
+    IEnumerator DelayedCenter()
+    {
+        // Wait until layout is done
+        yield return new WaitForEndOfFrame();
+        CenterLastRow();
     }
 
     public static void CenterLastRow()

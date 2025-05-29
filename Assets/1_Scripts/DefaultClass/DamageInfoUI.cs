@@ -26,13 +26,13 @@ public class DamageInfoUI : MonoBehaviour
             if (!piece.GetIsAlive()) continue;
 
             pieces.Add(Instantiate(prefab, grid.transform));
-            pieces[i].transform.SetSiblingIndex((int)piece.pieceVariant + (piece.level ? 1 : 0));
+            pieces[i].transform.SetSiblingIndex(i);
             UnityEngine.UI.Image image = pieces[i].GetComponent<UnityEngine.UI.Image>();
             image.sprite = piece.level ? piece.data.upgradePieceSprite : piece.data.pieceSprite;
             pieces[i].GetComponentInChildren<TMP_Text>().text = piece.currentDamage.ToString();
         }
 
-        CenterLastRow();
+        StartCoroutine(DelayedCenter());
     }
     public void UpdateDamageInfo()
     {
@@ -49,6 +49,13 @@ public class DamageInfoUI : MonoBehaviour
                 pieces[i].GetComponentInChildren<TMP_Text>().text = piece.currentDamage.ToString();
             }
         }
+    }
+
+    IEnumerator DelayedCenter()
+    {
+        // Wait until layout is done
+        yield return new WaitForEndOfFrame();
+        CenterLastRow();
     }
 
     public void CenterLastRow()

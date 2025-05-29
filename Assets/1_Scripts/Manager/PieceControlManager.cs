@@ -112,7 +112,6 @@ public class PieceControlManager : MonoBehaviour
 
     void SelectPiece()
     {
-        print(1);
         if (blockPiece)
             return;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

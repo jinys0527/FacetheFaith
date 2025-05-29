@@ -268,7 +268,7 @@ public class Monster : MonoBehaviour
                 lowerPiece.SetHp(lowerPiece.GetHp() - 1);
             }
         }
-        if (rightNode.currentPiece != null)
+        if (leftNode.currentPiece != null)
         {
             Piece leftPiece = leftNode.currentPiece.GetComponent<Piece>();
             if (leftPiece != null && !leftPiece.isDamageImmune)
@@ -276,7 +276,7 @@ public class Monster : MonoBehaviour
                 leftPiece.SetHp(leftPiece.GetHp() - 1);
             }
         }
-        if((lowerNode.currentPiece != null))
+        if((rightNode.currentPiece != null))
         {
             Piece rightPiece = rightNode.currentPiece.GetComponent<Piece>();
             if (rightPiece != null && !rightPiece.isDamageImmune)

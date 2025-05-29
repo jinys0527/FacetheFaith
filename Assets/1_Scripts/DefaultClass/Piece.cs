@@ -48,6 +48,7 @@ public class Piece : MonoBehaviour
     [Header("Stat")]
     [SerializeField] float hp;
     [SerializeField] float atk;
+    float prevAtk;
 
     float shield = 0f;
     bool isAlive = true;
@@ -59,6 +60,7 @@ public class Piece : MonoBehaviour
     public float currentDamage;
     public bool isDamageImmune = false;
     public bool isStatusImmune = false;
+    int duration = 0;
 
     private SpriteRenderer spriteRenderer;
 
@@ -157,52 +159,88 @@ public class Piece : MonoBehaviour
         return canAttack;
     }
 
-    public void SetStatusEffect(eStatusEffectType statusEffect)
+    public void UpdateStatusEffect(eStatusEffectType statusEffect)
     {
-        this.statusEffectType = statusEffect;
         canMove = true;
         canAttack = true;
         isDistort = false;
+        atk = prevAtk;
+
+        if (duration > 0)
+        {
+            duration--;
+            switch(statusEffect)
+            {
+                case eStatusEffectType.Freeze:
+                    canMove = false;
+                    break;
+                case eStatusEffectType.Weak:
+                    atk *= 0.5f;
+                    break;
+                case eStatusEffectType.Shock:
+                    canAttack = false;
+                    break;
+                case eStatusEffectType.Distort:
+                    isDistort = true;
+                    break;
+            }
+        }
+        else
+        {
+            statusEffectType = eStatusEffectType.None;
+        }
+    }
+
+    public void SetStatusEffect(eStatusEffectType statusEffect)
+    {
+        this.statusEffectType = statusEffect;
+
         switch (statusEffect)
         {
             case eStatusEffectType.Freeze:
-                canMove = false;
-                break;
             case eStatusEffectType.Weak:
-                currentDamage *= 0.5f;
-                break;
             case eStatusEffectType.Shock:
-                canAttack = false;
-                break;
             case eStatusEffectType.Distort:
-                isDistort = true;
+                duration = 1;
                 break;
             case eStatusEffectType.Knockback:
-                if (y == 0)
-                    break;
-                node.currentPiece = null;
-
-                bool isBlocked = false;
-
-                for(int i = y-1; i >= 0; i--)
-                {
-                    Vector2Int pos = new Vector2Int(x, i);
-                    if(BoardManager.instance.GetNode(pos).currentPiece != null)
-                    {
-                        pos = new Vector2Int(x, i+1);
-                        node = BoardManager.instance.GetNode(pos);
-                        node.currentPiece = this.gameObject;
-                        y = i + 1;
-                        isBlocked = true;
-                        break;
-                    }
-                }
-
-                if (isBlocked)
-                    break;
-                node.currentPiece = this.gameObject;
-                y = 0;
+                duration = 0;
+                ApplyKnockback();
                 break;
+            default:
+                duration = 0;
+                break;
+        }
+    }
+
+    private void ApplyKnockback()
+    {
+        if (y == 0)
+            return;
+
+        node.currentPiece = null;
+        bool isBlocked = false;
+
+        for (int i = y - 1; i >= 0; i--)
+        {
+            Vector2Int pos = new Vector2Int(x, i);
+            if (BoardManager.instance.GetNode(pos).currentPiece != null)
+            {
+                pos = new Vector2Int(x, i + 1);
+                node = BoardManager.instance.GetNode(pos);
+                node.currentPiece = this.gameObject;
+                y = i + 1;
+                isBlocked = true;
+                break;
+            }
+        }
+
+        if (!isBlocked)
+        {
+            Vector2Int bottomPos = new Vector2Int(x, 0);
+            node = BoardManager.instance.GetNode(bottomPos);
+            node.currentPiece = this.gameObject;
+            y = 0;
         }
     }
 
@@ -277,6 +315,7 @@ public class Piece : MonoBehaviour
     {
         hp = data.hp;
         atk = data.atk;
+        prevAtk = atk;
         moveRadius = data.moveRadius;
         currentDamage = atk;
 

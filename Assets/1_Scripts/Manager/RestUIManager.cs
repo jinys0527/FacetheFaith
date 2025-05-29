@@ -44,7 +44,15 @@ public class RestUIManager : BaseUIManager
     {
         upgradePopup?.SetActive(false);
         mapDeckUI?.SetActive(false);
-        DeleteCard.CancelDelete();
+        if (DeleteCard.selectedCards.Count > 0)
+        {
+            DeleteCard.DeleteSelectedCards();
+            SceneChangeManager.Instance.ChangeGameState(GameState.Map);
+        }
+        else
+        {
+            DeleteCard.CancelDelete();
+        }
         isPopupOpen = false;
     }
 

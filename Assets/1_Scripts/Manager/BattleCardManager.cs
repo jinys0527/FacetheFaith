@@ -184,7 +184,6 @@ public class BattleCardManager : CardManager
 
         base.Awake();
 
-        Shuffle();
         InitDeckVisuals(); //OnEnable 혹은 Awake 에서 덱 초기화 OnEnable 도 awake, start랑 비슷한데 컴포넌트가 활성화 될때마다 실행됨, 이미 활성화여도 실행됨
     }
 
@@ -245,6 +244,8 @@ public class BattleCardManager : CardManager
             m_deckObjects.Add(gameObject);
             gameObject.SetActive(false);
         }
+
+        Shuffle();
     }
     #endregion
 

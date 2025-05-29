@@ -28,26 +28,32 @@ public class StatusInfoUI : MonoBehaviour
 
             pieces.Add(Instantiate(prefab, grid.transform));
             pieces[i].transform.SetParent(grid.transform);
-            pieces[i].transform.SetSiblingIndex((int)piece.pieceVariant + (piece.level ? 1 : 0));
+            pieces[i].transform.SetSiblingIndex(i);
             UnityEngine.UI.Image image = pieces[i].GetComponent<UnityEngine.UI.Image>();
             pieces[i].GetComponent<StatusPiece>().piece = piece;
-            print(pieces[i]);
             image.sprite = piece.level ? piece.data.upgradePieceSprite : piece.data.pieceSprite;
         }
 
-        CenterLastRow();
-
         UpdateStatusInfo();
+
+        StartCoroutine(DelayedCenter());
     }
     public void UpdateStatusInfo()
     {
         foreach (GameObject piece in pieces)
         {
-           piece.GetComponent<StatusPiece>().StatusUpdate();
+            piece.GetComponent<StatusPiece>().StatusUpdate();
         }
     }
 
-     public void CenterLastRow()
+    IEnumerator DelayedCenter()
+    {
+        // Wait until layout is done
+        yield return new WaitForEndOfFrame();
+        CenterLastRow();
+    }
+
+    public void CenterLastRow()
     {
         int childCount = grid.transform.childCount;
         if (childCount == 0) return;

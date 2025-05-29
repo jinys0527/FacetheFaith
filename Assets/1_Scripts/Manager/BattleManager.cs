@@ -196,7 +196,7 @@ public class BattleManager : MonoBehaviour
                 }
                 foreach (Piece piece in BattlePieceManager.instance.pieces)
                 {
-                    piece.SetStatusEffect(eStatusEffectType.None);      // 턴별로 기물 상태이상 풀리므로 풀어주기
+                    piece.UpdateStatusEffect(piece.GetStatusEffect());      // 턴별로 기물 상태이상 풀리므로 풀어주기
                     piece.ClearAdditionalEffect();
                     piece.ClearDamageModifiers();
                     piece.currentDamage = piece.GetAtk();
